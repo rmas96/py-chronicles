@@ -1,0 +1,35 @@
+{
+    "activeFile": "map_1.tmx",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "map_1.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 772.6666666666667,
+                "y": 964
+            }
+        },
+        "terrain_atlas.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "C:/Users/X521/PycharmProjects/py_cronicles/imgs",
+    "last.imagePath": "C:/Users/X521/Game Dev/Tiled/Tilesets/Atlas",
+    "map.height": 50,
+    "map.lastUsedExportFilter": "Ficheiros de mapa JSON (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
+    "map.width": 50,
+    "openFiles": [
+        "map_1.tmx",
+        "terrain_atlas.tsx"
+    ],
+    "project": "py_cronicles.tiled-project",
+    "recentFiles": [
+        "terrain_atlas.tsx",
+        "map_1.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}
