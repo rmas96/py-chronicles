@@ -1,6 +1,7 @@
 import pygame
 from configs import *
 
+
 class Camera:
     def __init__(self, size_x, size_y, target):
         self.__width = size_x

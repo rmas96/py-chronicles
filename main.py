@@ -2,10 +2,7 @@ import pygame
 from configs import *
 from character import *
 from direction import *
-from obstacle import Obstacle
 from ui import *
-from fruit import *
-from ui import Ui
 from world import World
 from camera import Camera
 

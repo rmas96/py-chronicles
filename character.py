@@ -2,18 +2,16 @@ import pygame
 
 from configs import *
 from direction import *
-from fruit import Fruit
 
 
 class Character:
     def __init__(self):
-        self.__x = map.WIDTH / 2
-        self.__y = map.HEIGHT / 2
+        self.__x = map.WIDTH / 2 - skin.CHARACTER.get_width() / 2
+        self.__y = map.HEIGHT / 2 - skin.CHARACTER.get_height() / 2
         self.__skin = skin.CHARACTER
         self.__speed = 1
         self.__direction = None
         self.__lives = 10
-        self.__fruits_eaten = 0
         self.__is_dead = False
         self.__is_flipped = False
 
@@ -24,10 +22,6 @@ class Character:
     @property
     def y(self):
         return self.__y
-
-    @property
-    def fruits_eaten(self):
-        return self.__fruits_eaten
 
     @property
     def lives(self):
@@ -42,6 +36,8 @@ class Character:
 
     def move(self, dir: direction):
         if self.__is_dead:
+            return
+        if not self.is_inside_map():
             return
 
         self.__direction = dir
@@ -58,40 +54,19 @@ class Character:
         print(f"{self.__x}, {self.__y}")
         # print(f"{window.WIDTH - 360 - self.__skin.get_width()}")
 
-    def eat_fruit(self, fruit: Fruit):
-        if self.__is_dead:
-            return
-
-        if fruit.is_eaten:
-            return
-
-        if fruit.is_poisoned:
-            self.__lives -= fruit.poison_value
-            if self.__lives <= 0:
-                self.die()
-                return
-            self.__speed = 2
-            sound.OUCH.play()
-        else:
-            self.__fruits_eaten += 1
-            self.__speed += 2
-            sound.EATING.play()
-
-        fruit.get_eaten()
-
     def is_inside_map(self):
         if self.__x < 0:
             self.__x = 0
             return False
-        elif self.__x > window.WIDTH - self.__skin.get_width():
-            self.__x = window.WIDTH - self.__skin.get_width()
+        elif self.__x > map.WIDTH - self.__skin.get_width():
+            self.__x = map.WIDTH - self.__skin.get_width()
             return False
 
         if self.__y < 0:
             self.__y = 0
             return False
-        elif self.__y > window.HEIGHT - self.__skin.get_width():
-            self.__y = window.HEIGHT - self.__skin.get_width()
+        elif self.__y > map.HEIGHT - self.__skin.get_height():
+            self.__y = map.HEIGHT - self.__skin.get_height()
             return False
 
         return True

@@ -5,7 +5,7 @@ pygame.init()
 pygame.mixer.init()
 
 class window:
-    TITLE = "Fruit Picker"
+    TITLE = "Py Cronicles"
     WIDTH = 600
     HEIGHT = 600
     ICON = pygame.image.load("imgs/apple.png")
@@ -23,9 +23,6 @@ class font:
 class skin:
     # BACKGROUND = pytmx.load_pygame("imgs/map_1.tmx")
     CHARACTER = pygame.image.load("imgs/character.png")
-    APPLE_GOOD = pygame.image.load("imgs/apple_good.png")
-    APPLE_BAD = pygame.image.load("imgs/apple_bad.png")
-    APPLE_EATEN =pygame.image.load("imgs/apple_eaten.PNG")
 
 class sound:
     BACKGROUND = pygame.mixer.Sound("sounds/background.mp3")
