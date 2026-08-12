@@ -2,6 +2,7 @@ import pygame
 
 from configs import *
 from direction import *
+from world import World
 
 
 class Character:
@@ -14,6 +15,12 @@ class Character:
         self.__lives = 10
         self.__is_dead = False
         self.__is_flipped = False
+        self.__is_colliding = False
+        self.__just_collided = False
+
+    @property
+    def skin(self):
+        return self.__skin
 
     @property
     def x(self):
@@ -34,22 +41,40 @@ class Character:
     def draw(self, screen, camera):
         screen.blit(self.__skin, [self.__x - camera.x, self.__y - camera.y])
 
-    def move(self, dir: direction):
+    def move(self, dir: direction, world):
         if self.__is_dead:
             return
         if not self.is_inside_map():
             return
 
         self.__direction = dir
-
+        next_x = self.__x
+        next_y = self.__y
         if dir == direction.LEFT:
-            self.__x -= self.__speed
+            next_x -= self.__speed
         elif dir == direction.RIGHT:
-            self.__x += self.__speed
+            next_x += self.__speed
         elif dir == direction.UP:
-            self.__y -= self.__speed
+            next_y -= self.__speed
         else:
-            self.__y += self.__speed
+            next_y += self.__speed
+
+        if not world.would_collide(pygame.Rect(
+                next_x,
+                self.__y + self.__skin.get_height() / 2,
+                self.__skin.get_width(),
+                self.__skin.get_height() / 2
+        )):
+            self.__x = next_x
+
+        if not world.would_collide(pygame.Rect(
+                self.__x,
+                next_y + self.__skin.get_height() / 2,
+                self.__skin.get_width(),
+                self.__skin.get_height() / 2
+        )):
+            self.__y = next_y
+
 
         print(f"{self.__x}, {self.__y}")
         # print(f"{window.WIDTH - 360 - self.__skin.get_width()}")
@@ -71,18 +96,23 @@ class Character:
 
         return True
 
-    def bounce_back(self):
+    def collide(self):
         if self.__is_dead:
+            return
+        if not self.__is_colliding:
             return
 
         if self.__direction == direction.LEFT:
-            self.__x += self.__speed * 2
-        elif self.__direction == direction.RIGHT:
-            self.__x -= self.__speed * 2
-        elif self.__direction == direction.UP:
-            self.__y += self.__speed * 2
-        else:
-            self.__y -= self.__speed * 2
+            self.__x += 2
+
+        if self.__direction == direction.RIGHT:
+            self.__x -= 2
+
+        if self.__direction == direction.UP:
+            self.__y += 2
+
+        if self.__direction == direction.DOWN:
+            self.__y -= 2
 
     def die(self):
         self.__lives = 0
@@ -91,10 +121,27 @@ class Character:
             self.__skin = pygame.transform.flip(self.__skin, 0, 1)
             self.__is_flipped = True
 
-    def get_overlaping_area(self, skin, offset_x, offset_y):
+    def get_overlapping_area(self, skin, offset_x, offset_y):
         self_mask = pygame.mask.from_surface(self.__skin)
         target_mask = pygame.mask.from_surface(skin)
         return target_mask.overlap_area(self_mask, [self.__x - offset_x, self.__y - offset_y])
 
-    def colides(self, target):
-        return target.get_overlaping_area(self.__skin, self.__x, self.__y) > 0
+    def collides(self, target):
+        if isinstance(target, pygame.Rect):
+            if target.colliderect(
+                pygame.Rect(
+                    self.__x,
+                    self.__y + self.__skin.get_height() / 2,
+                    self.__skin.get_width(),
+                    self.__skin.get_height() / 2
+                )
+            ):
+                self.__is_colliding = True
+                return True
+        else:
+            if target.get_overlaping_area(self.__skin, self.__x, self.__y) > 0:
+                self.__is_colliding = True
+                return True
+
+        self.__is_colliding = False
+        return False

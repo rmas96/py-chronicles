@@ -16,7 +16,7 @@ world = World()
 character = Character()
 camera = Camera(window.WIDTH, window.HEIGHT, character)
 
-sound.BACKGROUND.play(loops=-1)
+# sound.BACKGROUND.play(loops=-1)
 
 game_over = False
 win = False
@@ -33,19 +33,19 @@ while True:
     key = pygame.key.get_pressed()
 
     if key[pygame.K_LEFT]:
-        character.move(direction.LEFT)
+        character.move(direction.LEFT, world)
         camera.update(character)
 
     if key[pygame.K_RIGHT]:
-        character.move(direction.RIGHT)
+        character.move(direction.RIGHT, world)
         camera.update(character)
 
     if key[pygame.K_UP]:
-        character.move(direction.UP)
+        character.move(direction.UP, world)
         camera.update(character)
 
     if key[pygame.K_DOWN]:
-        character.move(direction.DOWN)
+        character.move(direction.DOWN, world)
         camera.update(character)
 
     if key[pygame.K_SPACE]:
