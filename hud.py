@@ -1,19 +1,22 @@
 import pygame
 
 import configs
+from character import Character
 from configs import font
-from character import *
+from player import *
 
 
-class Ui:
+class Hud:
 
-    def __init__(self, n_fruits_to_eat):
-        self.__fruits_eaten = 0
-        self.__n_fruits_to_eat = n_fruits_to_eat
+    def __init__(self, player: Player):
+        self.__lives = player.lives
+        self.__hunger = player.hunger
+        self.__energy = player.energy
 
-    def update(self, character: Character):
-        self.__fruits_eaten = character.fruits_eaten
-        self.__lives = character.lives
+    def update(self, player: Player):
+        self.__lives = player.lives
+        self.__hunger = player.hunger
+        self.__energy = player.energy
 
     def draw(self, screen):
         # pygame.draw.rect(screen, "#212531", [648, 60, 115, 45])

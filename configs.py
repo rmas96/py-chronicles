@@ -39,3 +39,7 @@ class sound:
 
     COMPLETE = pygame.mixer.Sound("sounds/level_complete.wav")
     COMPLETE.set_volume(0.2)
+
+class game:
+    HUNGER_DECAY_TIME = 1
+    ENERGY_RECOVERY_TIME = 1

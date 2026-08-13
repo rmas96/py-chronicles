@@ -1,8 +1,8 @@
 import pygame
 from configs import *
-from character import *
+from player import *
 from direction import *
-from ui import *
+from hud import *
 from world import World
 from camera import Camera
 
@@ -13,8 +13,8 @@ pygame.display.set_caption(window.TITLE)
 
 clock = pygame.time.Clock()
 world = World()
-character = Character()
-camera = Camera(window.WIDTH, window.HEIGHT, character)
+player = Player()
+camera = Camera(window.WIDTH, window.HEIGHT, player)
 
 # sound.BACKGROUND.play(loops=-1)
 
@@ -28,30 +28,19 @@ while True:
             pygame.quit()
             quit(0)
 
-    world.draw(screen, camera)
-
     key = pygame.key.get_pressed()
 
-    if key[pygame.K_LEFT]:
-        character.move(direction.LEFT, world)
-        camera.update(character)
+    if key[pygame.K_ESCAPE]:
+        pygame.quit()
+        quit(0)
 
-    if key[pygame.K_RIGHT]:
-        character.move(direction.RIGHT, world)
-        camera.update(character)
+    world.draw(screen, camera)
 
-    if key[pygame.K_UP]:
-        character.move(direction.UP, world)
-        camera.update(character)
+    player.handle_input(world)
 
-    if key[pygame.K_DOWN]:
-        character.move(direction.DOWN, world)
-        camera.update(character)
+    player.update_stats(dt)
+    camera.update(player)
 
-    if key[pygame.K_SPACE]:
-        if win or game_over:
-            break
-
-    character.draw(screen, camera)
+    player.draw(screen, camera)
 
     pygame.display.update()
