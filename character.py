@@ -10,7 +10,7 @@ class Character:
     def __init__(self, x, y):
         self.__x = x
         self.__y = y
-        self.__skin = skin.CHARACTER
+        self.__skin = skin.PLAYER
         self.__speed = 1
         self.__direction = None
         self.__lives = 10
@@ -110,22 +110,19 @@ class Character:
         target_mask = pygame.mask.from_surface(skin)
         return target_mask.overlap_area(self_mask, [self.__x - offset_x, self.__y - offset_y])
 
-    # def collides(self, target):
-    #     if isinstance(target, pygame.Rect):
-    #         if target.colliderect(
-    #             pygame.Rect(
-    #                 self.__x,
-    #                 self.__y + self.__skin.get_height() / 2,
-    #                 self.__skin.get_width(),
-    #                 self.__skin.get_height() / 2
-    #             )
-    #         ):
-    #             self.__is_colliding = True
-    #             return True
-    #     else:
-    #         if target.get_overlaping_area(self.__skin, self.__x, self.__y) > 0:
-    #             self.__is_colliding = True
-    #             return True
-    #
-    #     self.__is_colliding = False
-    #     return False
+    def collides(self, target):
+        if isinstance(target, pygame.Rect):
+            if target.colliderect(
+                pygame.Rect(
+                    self.__x,
+                    self.__y + self.__skin.get_height() / 2,
+                    self.__skin.get_width(),
+                    self.__skin.get_height() / 2
+                )
+            ):
+                return True
+        else:
+            if target.get_overlaping_area(self.__skin, self.__x, self.__y) > 0:
+                return True
+
+        return False

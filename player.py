@@ -3,13 +3,15 @@ import pygame
 from direction import *
 from character import Character
 from configs import *
+from item import *
+from world import Pickup
 
 
 class Player(Character):
     def __init__(self):
         super().__init__(
-            map.WIDTH / 2 - skin.CHARACTER.get_width() / 2,
-            map.HEIGHT / 2 - skin.CHARACTER.get_height() / 2
+            map.WIDTH / 2 - skin.PLAYER.get_width() / 2,
+            map.HEIGHT / 2 - skin.PLAYER.get_height() / 2
         )
         self.__energy = 100
         self.__energy_timer = 0
@@ -24,6 +26,10 @@ class Player(Character):
     @property
     def energy(self):
         return self.__energy
+
+    @property
+    def inventory(self):
+        return self.__inventory
 
     def handle_input(self, world):
         key = pygame.key.get_pressed()
@@ -64,3 +70,35 @@ class Player(Character):
 
 
         print(f"{self.__hunger}, {self.__energy}")
+
+    def add_to_inventory(self, obj, image):
+        if isinstance(obj, Pickup):
+            if obj.tile.type == "mushroom":
+                item = InventoryItem(Food("mushroom", image, obj.tile.hunger_restore, obj.tile.poisonous))
+                if item in self.__inventory:
+                    for inv_item in self.__inventory:
+                        if inv_item.item == item:
+                            inv_item.increment_quant()
+                else:
+                    self.__inventory.append(item)
+            elif obj.tile.type == "mushroom_p":
+                item = InventoryItem(Food("mushroom_p", image, obj.tile.hunger_restore, obj.tile.poisonous))
+                if item in self.__inventory:
+                    for inv_item in self.__inventory:
+                        if inv_item.item == item:
+                            inv_item.increment_quant()
+                else:
+                    self.__inventory.append(item)
+        print(self.__inventory)
+
+class InventoryItem:
+    def __init__(self, item):
+        self.__item = item
+        self.__quantity = 1
+
+    @property
+    def item(self):
+        return self.__item
+
+    def increment_quant(self):
+        self.__quantity += 1

@@ -15,6 +15,7 @@ clock = pygame.time.Clock()
 world = World()
 player = Player()
 camera = Camera(window.WIDTH, window.HEIGHT, player)
+hud = Hud(player)
 
 # sound.BACKGROUND.play(loops=-1)
 
@@ -37,10 +38,12 @@ while True:
     world.draw(screen, camera)
 
     player.handle_input(world)
-
+    world.update_pickups(player, dt)
     player.update_stats(dt)
     camera.update(player)
+    hud.update(player)
 
     player.draw(screen, camera)
+    hud.draw(screen)
 
     pygame.display.update()

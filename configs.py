@@ -22,7 +22,7 @@ class font:
 
 class skin:
     # BACKGROUND = pytmx.load_pygame("imgs/map_1.tmx")
-    CHARACTER = pygame.image.load("imgs/character.png")
+    PLAYER = pygame.image.load("imgs/player.png")
 
 class sound:
     BACKGROUND = pygame.mixer.Sound("sounds/background.mp3")
@@ -43,3 +43,4 @@ class sound:
 class game:
     HUNGER_DECAY_TIME = 1
     ENERGY_RECOVERY_TIME = 1
+    MUSHROOM_RESPAWN_TIME = 10
