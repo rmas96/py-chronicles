@@ -10,7 +10,7 @@ class Character:
     def __init__(self, x, y):
         self.__x = x
         self.__y = y
-        self.__skin = skin.PLAYER
+        self.__skin = self.get_skin()
         self.__speed = 1
         self.__direction = None
         self.__lives = 10
@@ -32,6 +32,9 @@ class Character:
     @property
     def is_dead(self):
         return self.__is_dead
+
+    def get_skin(self):
+        return skin.PLAYER
 
     def draw(self, screen, camera: Camera):
         screen.blit(self.__skin, [self.__x - camera.x, self.__y - camera.y])
@@ -71,7 +74,7 @@ class Character:
             self.__y = next_y
 
 
-        # print(f"{self.__x}, {self.__y}")
+        print(f"{self.__x}, {self.__y}")
         # print(f"{window.WIDTH - 360 - self.__skin.get_width()}")
 
     def is_inside_map(self):

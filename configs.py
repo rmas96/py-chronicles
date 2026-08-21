@@ -23,6 +23,9 @@ class font:
 class skin:
     # BACKGROUND = pytmx.load_pygame("imgs/map_1.tmx")
     PLAYER = pygame.image.load("imgs/player.png")
+    DRUID = pygame.image.load("imgs/druid.png")
+    EXILED = pygame.image.load("imgs/exiled.png")
+    CORRUPTED = pygame.image.load("imgs/orc.png")
 
 class sound:
     BACKGROUND = pygame.mixer.Sound("sounds/background.mp3")

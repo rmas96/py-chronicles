@@ -18,6 +18,11 @@ class Player(Character):
         self.__hunger = 0
         self.__hunger_timer = 0
         self.__inventory = []
+        self.__reputation = {
+            "Druids": 0,
+            "Exiled": 0,
+            "Corrupted": 0
+        }
 
     @property
     def hunger(self):
@@ -30,6 +35,9 @@ class Player(Character):
     @property
     def inventory(self):
         return self.__inventory
+
+    def get_skin(self):
+        return skin.PLAYER
 
     def handle_input(self, world):
         key = pygame.key.get_pressed()
