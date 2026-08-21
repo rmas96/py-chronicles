@@ -11,6 +11,10 @@ class Item:
     def image(self):
         return self.__image
 
+    @property
+    def name(self):
+        return self.__name
+
 class Food(Item):
     def __init__(self, name, image, hunger_restore, poisonous):
         super().__init__(name, image)

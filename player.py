@@ -4,6 +4,7 @@ from direction import *
 from character import Character
 from configs import *
 from item import *
+from item import Item
 from world import Pickup
 
 
@@ -69,26 +70,33 @@ class Player(Character):
             self.__energy_timer -= game.ENERGY_RECOVERY_TIME * 1000
 
 
-        print(f"{self.__hunger}, {self.__energy}")
+        # print(f"{self.__hunger}, {self.__energy}")
 
     def add_to_inventory(self, obj, image):
+        repeated_item = False
+
         if isinstance(obj, Pickup):
-            if obj.tile.type == "mushroom":
-                item = InventoryItem(Food("mushroom", image, obj.tile.hunger_restore, obj.tile.poisonous))
-                if item in self.__inventory:
+            if obj.tile.type == "mushroom" or obj.tile.type == "mushroom_p":
+                item = InventoryItem(Food(obj.tile.type, image, obj.tile.hunger_restore, obj.tile.poisonous))
+                print(item.item.name)
+                print(item.quantity)
+                if self.__inventory:
                     for inv_item in self.__inventory:
-                        if inv_item.item == item:
+                        if item.item.name == inv_item.item.name:
+                            print("sabe que já tinha mushrooms")
                             inv_item.increment_quant()
-                else:
+                            repeated_item = True
+                if not repeated_item:
                     self.__inventory.append(item)
-            elif obj.tile.type == "mushroom_p":
-                item = InventoryItem(Food("mushroom_p", image, obj.tile.hunger_restore, obj.tile.poisonous))
-                if item in self.__inventory:
-                    for inv_item in self.__inventory:
-                        if inv_item.item == item:
-                            inv_item.increment_quant()
-                else:
-                    self.__inventory.append(item)
+                    print("adicionou o item")
+            # elif obj.tile.type == "mushroom_p":
+            #     item = InventoryItem(Food("mushroom_p", image, obj.tile.hunger_restore, obj.tile.poisonous))
+            #     if item in self.__inventory:
+            #         for inv_item in self.__inventory:
+            #             if inv_item.item == item:
+            #                 inv_item.increment_quant()
+            #     else:
+            #         self.__inventory.append(item)
         print(self.__inventory)
 
 class InventoryItem:
@@ -99,6 +107,10 @@ class InventoryItem:
     @property
     def item(self):
         return self.__item
+
+    @property
+    def quantity(self):
+        return self.__quantity
 
     def increment_quant(self):
         self.__quantity += 1

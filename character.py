@@ -71,7 +71,7 @@ class Character:
             self.__y = next_y
 
 
-        print(f"{self.__x}, {self.__y}")
+        # print(f"{self.__x}, {self.__y}")
         # print(f"{window.WIDTH - 360 - self.__skin.get_width()}")
 
     def is_inside_map(self):

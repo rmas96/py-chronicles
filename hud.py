@@ -18,6 +18,7 @@ class Hud:
         self.__lives = player.lives
         self.__hunger = player.hunger
         self.__energy = player.energy
+        self.__inventory = player.inventory
 
     def draw(self, screen):
         # pygame.draw.rect(screen, "#212531", [648, 60, 115, 45])
@@ -30,6 +31,7 @@ class Hud:
         energy_txt = font.CARTER_ONE.render(f"{self.__energy}", True, "blue")
 
 
+
         screen.blit(label_txt, [130 - label_txt.get_width() / 2, 10])
         screen.blit(lives_txt, [70 - lives_txt.get_width() / 2, 50])
         screen.blit(hunger_txt, [140 - hunger_txt.get_width() / 2, 50])
@@ -37,6 +39,8 @@ class Hud:
 
         i = 1
         for item in self.__inventory:
+            item_txt = font.CARTER_ONE.render(f"{item.quantity}", True, "white")
             screen.blit(item.item.image, [window.WIDTH - (window.WIDTH - 40 * i), window.HEIGHT - 40])
+            screen.blit(item_txt, [window.WIDTH - (window.WIDTH - 35 * i), window.HEIGHT - 35])
             i += 1
 
