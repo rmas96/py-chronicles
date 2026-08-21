@@ -4,7 +4,6 @@ from direction import *
 from character import Character
 from configs import *
 from item import *
-from item import Item
 from world import Pickup
 
 
@@ -47,6 +46,28 @@ class Player(Character):
         if key[pygame.K_DOWN] or key[pygame.K_s]:
             self.move(direction.DOWN, world)
 
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_1:
+                    if len(self.inventory) > 0:
+                        self.__inventory[0].item.use(self)
+
+                        if self.__inventory[0].item.consumable:
+                            self.__inventory[0].decrease_quant()
+
+                            if self.__inventory[0].quantity == 0:
+                                self.__inventory.remove(self.__inventory[0])
+
+                elif event.key == pygame.K_2:
+                    if len(self.__inventory) > 1:
+                        self.__inventory[1].item.use(self)
+
+                        if self.__inventory[1].item.consumable:
+                            self.__inventory[1].decrease_quant()
+
+                            if self.__inventory[1].quantity == 0:
+                                self.__inventory.remove(self.__inventory[1])
+
     def update_stats(self, dt):
         self.__hunger_timer += dt
         self.__energy_timer += dt
@@ -71,6 +92,20 @@ class Player(Character):
 
 
         # print(f"{self.__hunger}, {self.__energy}")
+
+    def take_damage(self, dmg):
+        self.__lives -= dmg
+
+        if self.__lives <= 0:
+            self.die()
+
+        sound.OUCH.play()
+
+    def replenish_hunger(self, val):
+        self.__hunger -= val
+
+        if self.__hunger < 0:
+            self.__hunger = 0
 
     def add_to_inventory(self, obj, image):
         repeated_item = False
@@ -114,3 +149,7 @@ class InventoryItem:
 
     def increment_quant(self):
         self.__quantity += 1
+
+    def decrease_quant(self):
+        if self.__quantity > 0:
+            self.__quantity -= 1

@@ -92,14 +92,16 @@ class Character:
         return True
 
     def lose_life(self, life_points):
-        if self.__lives > 0:
+        if self.__lives > 1:
             self.__lives -= life_points
+            sound.OUCH.play()
         else:
             self.die()
 
     def die(self):
         self.__lives = 0
         self.__is_dead = True
+        sound.GAME_OVER.play()
 
         if not self.__is_flipped:
             self.__skin = pygame.transform.flip(self.__skin, 0, 1)
