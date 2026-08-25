@@ -94,6 +94,10 @@ class Character:
 
         return True
 
+    def recover_life(self):
+        if self.__lives < game.MAX_LIFE:
+            self.__lives += 0.5
+
     def lose_life(self, life_points):
         if self.__lives > 1:
             self.__lives -= life_points

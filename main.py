@@ -29,7 +29,8 @@ win = False
 while True:
     dt = clock.tick(60)
 
-    for event in pygame.event.get():
+    events = pygame.event.get()
+    for event in events:
         if event.type == pygame.QUIT:
             pygame.quit()
             quit(0)
@@ -42,7 +43,7 @@ while True:
 
     world.draw(screen, camera)
 
-    player.handle_input(world)
+    player.handle_input(world, events)
     world.update_pickups(player, dt)
     player.update_stats(dt)
     druid.update(world, dt)

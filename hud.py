@@ -26,9 +26,9 @@ class Hud:
         # pygame.draw.rect(screen, "#212531", [773, 60, 70, 40])
 
         label_txt = font.CARTER_ONE.render(f"Life   Hunger  Energy", True, "white")
-        lives_txt = font.CARTER_ONE.render(f"{self.__lives}", True, "red")
-        hunger_txt = font.CARTER_ONE.render(f"{self.__hunger}", True, "yellow")
-        energy_txt = font.CARTER_ONE.render(f"{self.__energy}", True, "blue")
+        lives_txt = font.CARTER_ONE.render(f"{self.__lives:.0f}", True, "red")
+        hunger_txt = font.CARTER_ONE.render(f"{self.__hunger:.0f}", True, "yellow")
+        energy_txt = font.CARTER_ONE.render(f"{self.__energy:.0f}", True, "blue")
 
 
 

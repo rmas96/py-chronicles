@@ -17,6 +17,7 @@ class Player(Character):
         self.__energy_timer = 0
         self.__hunger = 0
         self.__hunger_timer = 0
+        self.__life_timer = 0
         self.__inventory = []
         self.__reputation = {
             "Druids": 0,
@@ -39,7 +40,29 @@ class Player(Character):
     def get_skin(self):
         return skin.PLAYER
 
-    def handle_input(self, world):
+    def handle_input(self, world, events):
+        self.handle_movement_input(world)
+
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                match event.key:
+                    case pygame.K_1:
+                        self.use_inventory_item(0)
+                    case pygame.K_2:
+                        self.use_inventory_item(1)
+
+
+    def use_inventory_item(self, i):
+        if len(self.inventory) > i:
+            self.__inventory[i].item.use(self)
+
+            if self.__inventory[i].item.consumable:
+                self.__inventory[i].decrease_quant()
+
+                if self.__inventory[i].quantity == 0:
+                    self.__inventory.remove(self.__inventory[i])
+
+    def handle_movement_input(self, world):
         key = pygame.key.get_pressed()
 
         if key[pygame.K_LEFT] or key[pygame.K_a]:
@@ -54,31 +77,11 @@ class Player(Character):
         if key[pygame.K_DOWN] or key[pygame.K_s]:
             self.move(direction.DOWN, world)
 
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_1:
-                    if len(self.inventory) > 0:
-                        self.__inventory[0].item.use(self)
-
-                        if self.__inventory[0].item.consumable:
-                            self.__inventory[0].decrease_quant()
-
-                            if self.__inventory[0].quantity == 0:
-                                self.__inventory.remove(self.__inventory[0])
-
-                elif event.key == pygame.K_2:
-                    if len(self.__inventory) > 1:
-                        self.__inventory[1].item.use(self)
-
-                        if self.__inventory[1].item.consumable:
-                            self.__inventory[1].decrease_quant()
-
-                            if self.__inventory[1].quantity == 0:
-                                self.__inventory.remove(self.__inventory[1])
-
     def update_stats(self, dt):
         self.__hunger_timer += dt
         self.__energy_timer += dt
+        if self.lives < 10:
+            self.__life_timer += dt
 
         while self.__hunger_timer >= game.HUNGER_DECAY_TIME * 1000:
             if self.__hunger < 100:
@@ -98,6 +101,12 @@ class Player(Character):
 
             self.__energy_timer -= game.ENERGY_RECOVERY_TIME * 1000
 
+        while self.__life_timer >= game.LIFE_RECOVERY_TIME * 1000:
+            if self.__energy - game.LIFE_RECOVERY_COST > 0:
+                self.recover_life()
+                self.__energy -= game.LIFE_RECOVERY_COST
+
+            self.__life_timer -= game.LIFE_RECOVERY_TIME * 1000
 
         # print(f"{self.__hunger}, {self.__energy}")
 
