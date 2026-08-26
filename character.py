@@ -3,7 +3,6 @@ import pygame
 from camera import *
 from configs import *
 from direction import *
-from world import World
 
 
 class Character:
@@ -26,6 +25,15 @@ class Character:
         return self.__y
 
     @property
+    def collision_rect(self):
+        return pygame.Rect(
+                            self.__x,
+                            self.__y + self.__skin.get_height() / 2,
+                            self.__skin.get_width(),
+                            self.__skin.get_height() / 2
+                        )
+
+    @property
     def lives(self):
         return self.__lives
 
@@ -39,7 +47,7 @@ class Character:
     def draw(self, screen, camera: Camera):
         screen.blit(self.__skin, [self.__x - camera.x, self.__y - camera.y])
 
-    def move(self, dir: direction, world: World):
+    def move(self, dir: direction, world):
         if self.__is_dead:
             return
         if not self.is_inside_map():
@@ -74,7 +82,7 @@ class Character:
             self.__y = next_y
 
 
-        print(f"{self.__x}, {self.__y}")
+        # print(f"{self.__x}, {self.__y}")
         # print(f"{window.WIDTH - 360 - self.__skin.get_width()}")
 
     def is_inside_map(self):
@@ -121,14 +129,7 @@ class Character:
 
     def collides(self, target):
         if isinstance(target, pygame.Rect):
-            if target.colliderect(
-                pygame.Rect(
-                    self.__x,
-                    self.__y + self.__skin.get_height() / 2,
-                    self.__skin.get_width(),
-                    self.__skin.get_height() / 2
-                )
-            ):
+            if target.colliderect(self.collision_rect):
                 return True
         else:
             if target.get_overlaping_area(self.__skin, self.__x, self.__y) > 0:

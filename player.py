@@ -4,7 +4,8 @@ from direction import *
 from character import Character
 from configs import *
 from item import *
-from world import Pickup
+from playerintent import playerintent
+from world import World, Pickup
 
 
 class Player(Character):
@@ -42,6 +43,7 @@ class Player(Character):
 
     def handle_input(self, world, events):
         self.handle_movement_input(world)
+        intent = playerintent.NONE
 
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -50,7 +52,10 @@ class Player(Character):
                         self.use_inventory_item(0)
                     case pygame.K_2:
                         self.use_inventory_item(1)
+                    case pygame.K_c:
+                        intent = playerintent.INTERACT
 
+        return intent
 
     def use_inventory_item(self, i):
         if len(self.inventory) > i:

@@ -19,6 +19,28 @@ class map:
 
 class font:
     CARTER_ONE = pygame.font.Font("fonts/CarterOne-Regular.ttf", 25)
+    LOBSTER_TWO = pygame.font.Font("fonts/LobsterTwo-Regular.ttf", 22)
+
+    @staticmethod
+    def split(text):
+        words = text.split(" ")
+        lines = []
+        current_line = ""
+
+        for word in words:
+            if current_line == "":
+                potential_line = word
+            else:
+                potential_line = current_line + " " + word
+
+            if font.CARTER_ONE.render(f"{potential_line}", True, (0,0,0)).get_width() <= 300:
+                current_line = potential_line
+            else:
+                lines.append(current_line)
+                current_line = word
+
+        lines.append(current_line)
+        return lines
 
 class skin:
     # BACKGROUND = pytmx.load_pygame("imgs/map_1.tmx")
@@ -26,6 +48,9 @@ class skin:
     DRUID = pygame.image.load("imgs/druid.png")
     EXILED = pygame.image.load("imgs/exiled.png")
     CORRUPTED = pygame.image.load("imgs/orc.png")
+    # DIALOG_BACKGROUND = pygame.transform.scale(pygame.image.load("imgs/papyrus_quad.png"), (window.WIDTH - 400, window.HEIGHT - 400))
+    DIALOG_BACKGROUND = pygame.image.load("imgs/papyrus_quad.png")
+
 
 class sound:
     BACKGROUND = pygame.mixer.Sound("sounds/background.mp3")

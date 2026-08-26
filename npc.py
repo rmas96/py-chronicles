@@ -1,8 +1,8 @@
 from random import randint
 
 from character import Character
-from configs import skin
-from direction import direction
+from configs import *
+from direction import *
 
 
 class Npc(Character):
@@ -11,6 +11,10 @@ class Npc(Character):
         super().__init__(x, y)
         self.__move_timer = 0
         self.__moving = False
+
+    @property
+    def faction(self):
+        return self.__faction
 
     def get_skin(self):
         if self.__faction == "druid":

@@ -2,7 +2,7 @@ import pygame
 import pytmx
 
 from configs import *
-from character import *
+from npc import Npc
 
 
 class World:
@@ -19,6 +19,11 @@ class World:
             for x, y, gid in self.__map.layernames["Colision"] if gid != 0
         ]
         self.__pickups = [Pickup(pickup) for pickup in self.__map.layernames["Pickups2"]]
+        self.__entities = {
+            "druid": Npc(1451.0, 1311.0, "druid"),
+            "exiled": Npc(1387.0, 469.0, "exiled"),
+            "corrupted": Npc(211.0, 135.0, "corrupted"),
+        }
 
     def draw(self, screen, camera):
         for layer in self.__map.visible_tile_layers:
@@ -39,12 +44,29 @@ class World:
                 if tile:
                     screen.blit(tile, (x, y))
 
+        self.__entities["druid"].draw(screen, camera)
+        self.__entities["exiled"].draw(screen, camera)
+        self.__entities["corrupted"].draw(screen, camera)
+
     def would_collide(self, rect):
         for col_rect in self.__collision_rects:
             if col_rect.colliderect(rect):
                 return True
 
         return None
+
+    def get_nearby_npc(self, player):
+        for entity in self.__entities:
+            if self.__entities[entity].collides(player.collision_rect.inflate(100, 100)):
+                return self.__entities[entity]
+
+        return None
+
+    def update(self, player, dt):
+        self.update_pickups(player, dt)
+        self.__entities["druid"].update(self, dt)
+        self.__entities["exiled"].update(self, dt)
+        self.__entities["corrupted"].update(self, dt)
 
     def update_pickups(self, player, dt):
         for pickup in self.__pickups:

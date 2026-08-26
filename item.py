@@ -1,7 +1,7 @@
 from pygame.examples.cursors import image
 from unicodedata import name
 
-from configs import game, sound
+from configs import *
 
 
 class Item:
