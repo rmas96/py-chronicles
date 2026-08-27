@@ -53,6 +53,14 @@ while True:
                 # print("sabe que é para entrar em dialogo")
             else:
                 player_intent = playerintent.NONE
+        elif player_intent == playerintent.ATTACK:
+            npc = world.get_nearby_npc(player)
+            if npc:
+                if player.collides(npc):
+                    npc.lose_life(player.attack_power)
+                    npc.become_hostile(player)
+
+            player_intent = playerintent.NONE
     elif player_intent == playerintent.INTERACT:
         player_intent = dialog.handle_input(events)
 
@@ -67,5 +75,18 @@ while True:
     if player_intent == playerintent.INTERACT:
         print("pos em estado de dialogo")
         dialog.draw(screen, camera)
+
+    for faction in world.factions:
+        if world.factions[faction].stage == 3:
+            win_text = font.CARTER_ONE.render(
+                f"A facção {world.factions[faction].name} concretizou o seu objetivo",
+                True,
+                "black"
+            )
+
+            screen.blit(win_text, [
+                window.WIDTH / 2 - win_text.get_width() / 2,
+                window.HEIGHT / 2])
+            break
 
     pygame.display.update()

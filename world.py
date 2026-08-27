@@ -2,6 +2,7 @@ import pygame
 import pytmx
 
 from configs import *
+from faction import *
 from npc import Npc
 
 
@@ -19,11 +20,20 @@ class World:
             for x, y, gid in self.__map.layernames["Colision"] if gid != 0
         ]
         self.__pickups = [Pickup(pickup) for pickup in self.__map.layernames["Pickups2"]]
-        self.__entities = {
-            "druid": Npc(1451.0, 1311.0, "druid"),
-            "exiled": Npc(1387.0, 469.0, "exiled"),
-            "corrupted": Npc(211.0, 135.0, "corrupted"),
+        self.__factions = {
+            "druid": Druid(),
+            "exiled": Exiled(),
+            "corrupted": Corrupted()
         }
+        self.__entities = {
+            "druid": Npc(self.__factions["druid"]),
+            "exiled": Npc(self.__factions["exiled"]),
+            "corrupted": Npc(self.__factions["corrupted"]),
+        }
+
+    @property
+    def factions(self):
+        return self.__factions
 
     def draw(self, screen, camera):
         for layer in self.__map.visible_tile_layers:
@@ -44,9 +54,8 @@ class World:
                 if tile:
                     screen.blit(tile, (x, y))
 
-        self.__entities["druid"].draw(screen, camera)
-        self.__entities["exiled"].draw(screen, camera)
-        self.__entities["corrupted"].draw(screen, camera)
+        for entity in self.__entities:
+            self.__entities[entity].draw(screen, camera)
 
     def would_collide(self, rect):
         for col_rect in self.__collision_rects:
@@ -64,9 +73,12 @@ class World:
 
     def update(self, player, dt):
         self.update_pickups(player, dt)
-        self.__entities["druid"].update(self, dt)
-        self.__entities["exiled"].update(self, dt)
-        self.__entities["corrupted"].update(self, dt)
+
+        for faction in self.__factions:
+            self.__factions[faction].advance_stage(dt, self.__factions)
+
+        for entity in self.__entities:
+            self.__entities[entity].update(self, dt, player)
 
     def update_pickups(self, player, dt):
         for pickup in self.__pickups:

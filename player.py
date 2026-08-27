@@ -19,6 +19,7 @@ class Player(Character):
         self.__hunger = 0
         self.__hunger_timer = 0
         self.__life_timer = 0
+        self.__attack_timer = 0
         self.__inventory = []
         self.__reputation = {
             "Druids": 0,
@@ -54,6 +55,10 @@ class Player(Character):
                         self.use_inventory_item(1)
                     case pygame.K_c:
                         intent = playerintent.INTERACT
+                    case pygame.K_e:
+                        intent = playerintent.ATTACK
+                        self.is_attacking = True
+                        self.__energy -= 1
 
         return intent
 
@@ -85,8 +90,14 @@ class Player(Character):
     def update_stats(self, dt):
         self.__hunger_timer += dt
         self.__energy_timer += dt
+        self.__attack_timer += dt
+
         if self.lives < 10:
             self.__life_timer += dt
+
+        if self.__attack_timer >= 1000:
+            self.is_attacking = False
+            self.__attack_timer = 0
 
         while self.__hunger_timer >= game.HUNGER_DECAY_TIME * 1000:
             if self.__hunger < 100:
@@ -115,14 +126,6 @@ class Player(Character):
 
         # print(f"{self.__hunger}, {self.__energy}")
 
-    def take_damage(self, dmg):
-        self.__lives -= dmg
-
-        if self.__lives <= 0:
-            self.die()
-
-        sound.OUCH.play()
-
     def replenish_hunger(self, val):
         self.__hunger -= val
 
@@ -146,14 +149,6 @@ class Player(Character):
                 if not repeated_item:
                     self.__inventory.append(item)
                     print("adicionou o item")
-            # elif obj.tile.type == "mushroom_p":
-            #     item = InventoryItem(Food("mushroom_p", image, obj.tile.hunger_restore, obj.tile.poisonous))
-            #     if item in self.__inventory:
-            #         for inv_item in self.__inventory:
-            #             if inv_item.item == item:
-            #                 inv_item.increment_quant()
-            #     else:
-            #         self.__inventory.append(item)
         print(self.__inventory)
 
 class InventoryItem:

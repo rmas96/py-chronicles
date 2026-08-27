@@ -8,13 +8,13 @@ from player import *
 
 class Hud:
 
-    def __init__(self, player: Player):
+    def __init__(self, player):
         self.__lives = player.lives
         self.__hunger = player.hunger
         self.__energy = player.energy
         self.__inventory = player.inventory
 
-    def update(self, player: Player):
+    def update(self, player):
         self.__lives = player.lives
         self.__hunger = player.hunger
         self.__energy = player.energy

@@ -3,16 +3,19 @@ import pygame
 import configs
 import dialogues
 from configs import skin, window, font
+from faction import Faction
 from playerintent import playerintent
 
 
 class DialogManager:
     def __init__(self, npc):
-        match npc.faction:
+        match npc.faction.name:
             case "druid": self.__dialog_tree = dialogues.DRUID_DIALOGUE
             case "exiled": self.__dialog_tree = dialogues.EXILED_DIALOGUE
             case "corrupted": self.__dialog_tree = dialogues.CORRUPTED_DIALOGUE
-        self.__current_node = "start"
+        self.__faction_stage = npc.faction.stage
+        match self.__faction_stage:
+            case 0: self.__current_node = "start"
         self.__skin = skin.DIALOG_BACKGROUND
 
     def draw(self, screen, camera):

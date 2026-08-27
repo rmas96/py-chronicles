@@ -10,11 +10,14 @@ class Character:
         self.__x = x
         self.__y = y
         self.__skin = self.get_skin()
+        self.__attacking_skin = self.get_attack_skin()
         self.__speed = 1
         self.__direction = None
         self.__lives = 10
         self.__is_dead = False
         self.__is_flipped = False
+        self.__is_attacking = False
+        self.__attack_power = self.get_attack_power()
 
     @property
     def x(self):
@@ -41,11 +44,32 @@ class Character:
     def is_dead(self):
         return self.__is_dead
 
+    @property
+    def is_attacking(self):
+        return self.__is_attacking
+
+    @is_attacking.setter
+    def is_attacking(self, value):
+        self.__is_attacking = value
+
+    @property
+    def attack_power(self):
+        return self.__attack_power
+
     def get_skin(self):
         return skin.PLAYER
 
+    def get_attack_skin(self):
+        return skin.PLAYER_ATTACKING
+
+    def get_attack_power(self):
+        return 1
+
     def draw(self, screen, camera: Camera):
-        screen.blit(self.__skin, [self.__x - camera.x, self.__y - camera.y])
+        if self.__is_attacking:
+            screen.blit(self.__attacking_skin, [self.__x - camera.x, self.__y - camera.y])
+        else:
+            screen.blit(self.__skin, [self.__x - camera.x, self.__y - camera.y])
 
     def move(self, dir: direction, world):
         if self.__is_dead:
@@ -132,7 +156,7 @@ class Character:
             if target.colliderect(self.collision_rect):
                 return True
         else:
-            if target.get_overlaping_area(self.__skin, self.__x, self.__y) > 0:
+            if target.get_overlapping_area(self.__skin, self.__x, self.__y) > 0:
                 return True
 
         return False

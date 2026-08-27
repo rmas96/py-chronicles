@@ -45,6 +45,7 @@ class font:
 class skin:
     # BACKGROUND = pytmx.load_pygame("imgs/map_1.tmx")
     PLAYER = pygame.image.load("imgs/player.png")
+    PLAYER_ATTACKING = pygame.image.load("imgs/player attacking.png")
     DRUID = pygame.image.load("imgs/druid.png")
     EXILED = pygame.image.load("imgs/exiled.png")
     CORRUPTED = pygame.image.load("imgs/orc.png")
@@ -69,10 +70,18 @@ class sound:
     COMPLETE.set_volume(0.2)
 
 class game:
-    HUNGER_DECAY_TIME = 1
+    HUNGER_DECAY_TIME = 2
     ENERGY_RECOVERY_TIME = 1
     LIFE_RECOVERY_TIME = 5
     LIFE_RECOVERY_COST = 10
     MAX_LIFE = 10
     MUSHROOM_RESPAWN_TIME = 100
     POISON_DAMAGE = 1
+    CORRUPTION_TIME = 2  # minutes
+    CORRUPTED_KILL_TRIGGER = 1
+    CORRUPTED_MAX_KILLS = 3
+    EXILED_RESOURCE_OBJECTIVE = 5
+    EXILED_BUILD_TIME = 2   # minutes
+    DRUID_RESOURCE_LIMIT = 5
+    DRUID_MAX_KILLS = 3
+    ATTACK_COOLDOWN = 1
