@@ -53,14 +53,22 @@ while True:
                 # print("sabe que é para entrar em dialogo")
             else:
                 player_intent = playerintent.NONE
+
         elif player_intent == playerintent.ATTACK:
             npc = world.get_nearby_npc(player)
             if npc:
                 if player.collides(npc):
                     npc.lose_life(player.attack_power)
                     npc.become_hostile(player)
-
             player_intent = playerintent.NONE
+
+        elif player_intent == playerintent.GIVE_RESOURCE:
+            npc = world.get_nearby_npc(player)
+            if npc:
+                if npc.faction.name == "exiled":
+                    world.factions["exiled"].increment_resource_qt()
+            player_intent = playerintent.NONE
+
     elif player_intent == playerintent.INTERACT:
         player_intent = dialog.handle_input(events)
 

@@ -16,6 +16,9 @@ class DialogManager:
         self.__faction_stage = npc.faction.stage
         match self.__faction_stage:
             case 0: self.__current_node = "start"
+            case 1: self.__current_node = "start"
+            case 2: self.__current_node = "start"
+            case 3: self.__current_node = "start"
         self.__skin = skin.DIALOG_BACKGROUND
 
     def draw(self, screen, camera):

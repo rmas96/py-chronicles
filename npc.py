@@ -31,17 +31,81 @@ class Npc(Character):
 
         return self.__skin
 
-    def update(self, world, dt, player):
+    def update(self, world, dt, player, faction):
         if self.is_dead:
             return
 
         self.update_cooldown_timer(dt)
 
         if self.__hostile:
-            if self.__target.get_skin() == player.get_skin():
-                self.attack(player, world)
+            self.attack(self.__target, world)
         else:
             self.move_randomly(dt, world)
+
+        match self.__faction.name:
+            case "druid":
+                if faction.stage == 1:
+                    npc = world.get_nearby_npc(self)
+                    if npc:
+                        if npc.faction.name == "corrupted" and not npc.is_dead:
+                            self.__hostile = True
+                            self.__target = npc
+                elif faction.stage == 2:
+                    self.be_hostile_to_all(player, world)
+
+            case "corrupted":
+                if faction.stage == 1:
+                    self.be_hostile_to_all(player, world)
+                elif faction.stage == 2:
+                    self.kill_all(player, world)
+
+            case "exiled":
+                if faction.stage == 2:
+                    self.travel_to([60, 333.0], world)
+
+                    if self.x == 60 and self.y == 333:
+                        self.teleport([30, 333])
+                        self.faction.wall_exploded()
+
+    def be_hostile_to_all(self, player, world):
+        npc = world.get_nearby_npc(self)
+        player_target = world.get_nearby_npc(player)
+
+        if npc:
+            self.__hostile = True
+            self.__target = npc
+
+        if player_target:
+            if player_target.x == self.x and player_target.y == self.y:
+                self.__hostile = True
+                self.__target = player
+
+        if self.__target:
+            if self.__target.is_dead:
+                self.__hostile = False
+                self.faction.increment_kill_count()
+                self.__target = None
+
+    def kill_all(self, player, world):
+        if not self.__target:
+            self_count = 0
+            while not self.__target:
+                target = world.get_random_npc()
+                if target == self:
+                    self_count += 1
+
+                if self_count >= 3:
+                    target = player
+
+                if target != self:
+                    self.__target = target
+
+        self.__hostile = True
+
+        if self.__target:
+            if self.__target.is_dead:
+                self.faction.increment_kill_count()
+                self.__target = None
 
     def move_randomly(self, dt, world):
         self.__move_timer += dt
@@ -68,36 +132,43 @@ class Npc(Character):
         if self.__moving:
             self.move(self.__direction, world)
 
-    def become_hostile(self, player):
+    def become_hostile(self, target):
         if not self.is_dead:
             self.__hostile = True
-            self.__target = player
+            self.__target = target
 
     def attack(self, target, world):
+        if target.is_dead:
+            self.__hostile = False
+            return
+
         if self.collides(target):
             if not self.__in_cooldown:
                 target.lose_life(self.attack_power)
+                if target.get_skin() != skin.PLAYER:
+                    target.become_hostile(self)
                 self.__in_cooldown = True
         else:
-            x_diff = target.x - self.x
-            y_diff = target.y - self.y
+            self.travel_to([target.x, target.y], world)
 
-            if x_diff < 0 and abs(x_diff) >= abs(y_diff):
-                self.__direction = direction.LEFT
 
-            if x_diff > 0 and abs(x_diff) >= abs(y_diff):
-                self.__direction = direction.RIGHT
+    def travel_to(self, coord, world):
+        x_diff = coord[0] - self.x
+        y_diff = coord[1] - self.y
 
-            if y_diff < 0 and abs(y_diff) >= abs(x_diff):
-                self.__direction = direction.UP
+        if x_diff < 0 and abs(x_diff) >= abs(y_diff):
+            self.__direction = direction.LEFT
 
-            if y_diff > 0 and abs(y_diff) >= abs(x_diff):
-                self.__direction = direction.DOWN
+        if x_diff > 0 and abs(x_diff) >= abs(y_diff):
+            self.__direction = direction.RIGHT
 
-            self.move(self.__direction, world)
+        if y_diff < 0 and abs(y_diff) >= abs(x_diff):
+            self.__direction = direction.UP
 
-        if target.is_dead:
-            self.__hostile = False
+        if y_diff > 0 and abs(y_diff) >= abs(x_diff):
+            self.__direction = direction.DOWN
+
+        self.move(self.__direction, world)
 
     def update_cooldown_timer(self, dt):
         if self.__in_cooldown:

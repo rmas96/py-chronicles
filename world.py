@@ -1,5 +1,6 @@
 import pygame
 import pytmx
+import random
 
 from configs import *
 from faction import *
@@ -64,12 +65,21 @@ class World:
 
         return None
 
-    def get_nearby_npc(self, player):
+    def get_nearby_npc(self, target):
         for entity in self.__entities:
-            if self.__entities[entity].collides(player.collision_rect.inflate(100, 100)):
-                return self.__entities[entity]
+            if self.__entities[entity].collides(target.collision_rect.inflate(100, 100)):
+                if self.__entities[entity] != target:
+                    return self.__entities[entity]
 
         return None
+
+    def get_random_npc(self):
+        [name, random_npc] = random.choice(list(self.__entities.items()))
+
+        while random_npc.is_dead:
+            random_npc = random.choice(list(self.__entities.items()))
+
+        return random_npc
 
     def update(self, player, dt):
         self.update_pickups(player, dt)
@@ -78,7 +88,7 @@ class World:
             self.__factions[faction].advance_stage(dt, self.__factions)
 
         for entity in self.__entities:
-            self.__entities[entity].update(self, dt, player)
+            self.__entities[entity].update(self, dt, player, self.__factions[self.__entities[entity].faction.name])
 
     def update_pickups(self, player, dt):
         for pickup in self.__pickups:

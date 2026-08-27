@@ -61,12 +61,21 @@ class Druid(Faction):
         if self.__kill_count >= game.DRUID_MAX_KILLS:
             self.stage = 3
 
+    def increment_kill_count(self):
+        self.__kill_count += 1
+
 class Exiled(Faction):
     def __init__(self):
         super().__init__()
         self.__resources_qt = 0
         self.__build_timer = 0
         self.__wall_exploded = False
+
+    def increment_resource_qt(self):
+        self.__resources_qt += 1
+
+    def wall_exploded(self):
+        self.__wall_exploded = True
 
     def get_name(self):
         return "exiled"
@@ -83,10 +92,13 @@ class Exiled(Faction):
     def count_resources(self):
         if self.__resources_qt >= game.EXILED_RESOURCE_OBJECTIVE:
             self.stage = 1
+            print("Exilados começam a construir uma bomba")
 
     def build_bomb(self, dt):
+        self.__build_timer += dt
         if self.__build_timer >= game.EXILED_BUILD_TIME * 60 * 1000:
             self.stage = 2
+            print("Exilados vão para a cidade")
 
     def assess_wall_explosion(self):
         if self.__wall_exploded:
@@ -96,7 +108,7 @@ class Corrupted(Faction):
     def __init__(self):
         super().__init__()
         self.__corruption_timer = 0
-        self.__kill_number = 0
+        self.__kill_count = 0
 
     def get_name(self):
         return "corrupted"
@@ -119,10 +131,13 @@ class Corrupted(Faction):
 
     def assess_kills(self):
         if self.stage == 1:
-            if self.__kill_number >= game.CORRUPTED_KILL_TRIGGER:
+            if self.__kill_count >= game.CORRUPTED_KILL_TRIGGER:
                 self.stage = 2
-                self.__kill_number = 0
+                self.__kill_count = 0
         elif self.stage == 2:
-            if self.__kill_number >= game.CORRUPTED_MAX_KILLS:
+            if self.__kill_count >= game.CORRUPTED_MAX_KILLS:
                 self.stage = 3
-                self.__kill_number = 0
+                self.__kill_count = 0
+
+    def increment_kill_count(self):
+        self.__kill_count += 1

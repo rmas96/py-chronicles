@@ -53,12 +53,15 @@ class Player(Character):
                         self.use_inventory_item(0)
                     case pygame.K_2:
                         self.use_inventory_item(1)
+                    case pygame.K_3:
+                        intent = playerintent.GIVE_RESOURCE
                     case pygame.K_c:
                         intent = playerintent.INTERACT
                     case pygame.K_e:
-                        intent = playerintent.ATTACK
-                        self.is_attacking = True
-                        self.__energy -= 1
+                        if not self.is_attacking:
+                            intent = playerintent.ATTACK
+                            self.is_attacking = True
+                            self.__energy -= 1
 
         return intent
 
@@ -74,6 +77,10 @@ class Player(Character):
 
     def handle_movement_input(self, world):
         key = pygame.key.get_pressed()
+        self.__speed = 1
+
+        if key[pygame.KMOD_SHIFT]:
+            self.increase_speed(2)
 
         if key[pygame.K_LEFT] or key[pygame.K_a]:
             self.move(direction.LEFT, world)
@@ -86,6 +93,8 @@ class Player(Character):
 
         if key[pygame.K_DOWN] or key[pygame.K_s]:
             self.move(direction.DOWN, world)
+
+        self.increase_speed(1)
 
     def update_stats(self, dt):
         self.__hunger_timer += dt
@@ -119,7 +128,7 @@ class Player(Character):
 
         while self.__life_timer >= game.LIFE_RECOVERY_TIME * 1000:
             if self.__energy - game.LIFE_RECOVERY_COST > 0:
-                self.recover_life()
+                self.recover_life(0.5)
                 self.__energy -= game.LIFE_RECOVERY_COST
 
             self.__life_timer -= game.LIFE_RECOVERY_TIME * 1000
@@ -128,6 +137,7 @@ class Player(Character):
 
     def replenish_hunger(self, val):
         self.__hunger -= val
+        self.recover_life(0.25)
 
         if self.__hunger < 0:
             self.__hunger = 0

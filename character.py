@@ -18,6 +18,7 @@ class Character:
         self.__is_flipped = False
         self.__is_attacking = False
         self.__attack_power = self.get_attack_power()
+        self.__kill_count = 0
 
     @property
     def x(self):
@@ -55,6 +56,10 @@ class Character:
     @property
     def attack_power(self):
         return self.__attack_power
+
+    @property
+    def kill_count(self):
+        return self.__kill_count
 
     def get_skin(self):
         return skin.PLAYER
@@ -109,6 +114,13 @@ class Character:
         # print(f"{self.__x}, {self.__y}")
         # print(f"{window.WIDTH - 360 - self.__skin.get_width()}")
 
+    def increase_speed(self, value):
+        self.__speed = value
+
+    def teleport(self, coord):
+        self.__x = coord[0]
+        self.__y = coord[1]
+
     def is_inside_map(self):
         if self.__x < 0:
             self.__x = 0
@@ -126,10 +138,11 @@ class Character:
 
         return True
 
-    def recover_life(self):
-        if self.__lives < game.MAX_LIFE:
-            self.__lives += 0.5
+    def recover_life(self, value):
+        self.__lives += value
 
+        if self.__lives > game.MAX_LIFE:
+            self.__lives = game.MAX_LIFE
     def lose_life(self, life_points):
         if self.__lives > 1:
             self.__lives -= life_points
