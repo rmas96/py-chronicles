@@ -18,6 +18,10 @@ class Item:
     def name(self):
         return self.__name
 
+    @property
+    def consumable(self):
+        return self.__consumable
+
     def use(self, player):
         pass
 
@@ -38,3 +42,12 @@ class Food(Item):
 
         player.replenish_hunger(self.__hunger_restore)
         sound.EATING.play()
+
+class Resource(Item):
+    def __init__(self, name, image):
+        super().__init__(name, image)
+        self.__consumable = True
+
+    @property
+    def consumable(self):
+        return self.__consumable

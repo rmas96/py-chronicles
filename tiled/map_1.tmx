@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="18" nextobjectid="82">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="18" nextobjectid="87">
  <editorsettings>
   <export target="../../../PycharmProjects/py_cronicles/imgs/map_1.tmj" format="json"/>
  </editorsettings>
@@ -660,7 +660,7 @@
 0,0,0,0,0,0,0,0,0,699,700,0,696,0,0,0,0,460,461,0,731,732,0,0,0,0,0,0,0,0,0,990,991,992,0,0,0,0,0,0,0,0,0,990,991,992,0,956,957,0,
 0,0,236,0,0,0,0,0,0,731,732,0,703,0,701,702,0,492,493,0,0,0,460,461,0,696,0,956,957,0,600,1022,1023,1024,0,0,0,0,0,0,0,0,0,1022,1023,1024,0,988,989,0,
 0,699,700,0,0,0,696,0,0,0,695,0,735,0,733,734,0,0,0,0,0,0,492,493,0,0,0,988,989,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1020,1021,0,
-0,731,732,0,0,701,702,0,0,0,0,0,0,0,0,0,694,0,703,0,0,0,0,0,0,0,0,1020,1021,0,0,0,0,0,0,0,0,0,0,0,0,0,956,957,0,924,0,0,0,0,
+0,731,732,0,0,701,702,0,0,0,0,0,0,0,0,0,694,0,703,0,0,0,0,0,0,0,0,1020,1021,0,0,0,0,0,0,0,0,0,0,0,0,0,956,957,0,0,0,0,0,0,
 0,0,0,698,0,733,734,0,0,0,0,0,0,0,0,0,0,0,735,0,235,0,0,699,700,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,32,988,989,0,0,0,0,0,0,
 0,0,0,0,0,0,0,697,0,0,0,0,0,0,0,0,0,696,0,0,0,0,0,731,732,0,0,0,0,0,235,0,0,0,695,0,0,0,0,0,63,64,1020,1021,0,0,0,0,0,0,
 0,0,235,0,699,700,0,0,0,0,0,0,0,0,460,461,0,0,0,0,460,461,697,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,95,96,0,0,0,0,926,927,928,0,
@@ -706,7 +706,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,235,0,0,0,0,0,0,0,473,474,475,0,0,0,1022,1023,1024,0,0,0,0,0,0,0,1020,1021,0,0,0,0,1020,1021,0
 </data>
  </layer>
- <objectgroup id="17" name="Pickups2">
+ <objectgroup id="17" name="Pickups">
   <object id="57" name="mushroom" type="mushroom" gid="924" x="1026.67" y="578.667" width="32" height="32">
    <properties>
     <property name="hunger_restore" type="int" value="10"/>
@@ -791,59 +791,64 @@
     <property name="poisonous" type="bool" value="false"/>
    </properties>
   </object>
-  <object id="72" name="mushroom" type="mushroom_p" gid="1019" x="609.333" y="544" width="32" height="32">
+  <object id="72" name="poison mushroom" type="mushroom" gid="1019" x="609.333" y="544" width="32" height="32">
    <properties>
     <property name="hunger_restore" type="int" value="10"/>
     <property name="poisonous" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="74" name="mushroom" type="mushroom_p" gid="1019" x="1086.67" y="1508" width="32" height="32">
+  <object id="74" name="poison mushroom" type="mushroom" gid="1019" x="1086.67" y="1508" width="32" height="32">
    <properties>
     <property name="hunger_restore" type="int" value="10"/>
     <property name="poisonous" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="75" name="mushroom" type="mushroom_p" gid="1019" x="1185.33" y="1600" width="32" height="32">
+  <object id="75" name="poison mushroom" type="mushroom" gid="1019" x="1185.33" y="1600" width="32" height="32">
    <properties>
     <property name="hunger_restore" type="int" value="10"/>
     <property name="poisonous" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="76" name="mushroom" type="mushroom_p" gid="1019" x="1314.67" y="1506.67" width="32" height="32">
+  <object id="76" name="poison mushroom" type="mushroom" gid="1019" x="1314.67" y="1506.67" width="32" height="32">
    <properties>
     <property name="hunger_restore" type="int" value="10"/>
     <property name="poisonous" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="77" name="mushroom" type="mushroom_p" gid="1019" x="1186.67" y="1280" width="32" height="32">
+  <object id="77" name="poison mushroom" type="mushroom" gid="1019" x="1186.67" y="1280" width="32" height="32">
    <properties>
     <property name="hunger_restore" type="int" value="10"/>
     <property name="poisonous" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="78" name="mushroom" type="mushroom_p" gid="1019" x="1377.33" y="1185.33" width="32" height="32">
+  <object id="78" name="poison mushroom" type="mushroom" gid="1019" x="1377.33" y="1185.33" width="32" height="32">
    <properties>
     <property name="hunger_restore" type="int" value="10"/>
     <property name="poisonous" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="79" name="mushroom" type="mushroom_p" gid="1019" x="1506.67" y="1025.33" width="32" height="32">
+  <object id="79" name="poison mushroom" type="mushroom" gid="1019" x="1506.67" y="1025.33" width="32" height="32">
    <properties>
     <property name="hunger_restore" type="int" value="10"/>
     <property name="poisonous" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="80" name="mushroom" type="mushroom_p" gid="1019" x="1410.67" y="610.667" width="32" height="32">
+  <object id="80" name="poison mushroom" type="mushroom" gid="1019" x="1410.67" y="610.667" width="32" height="32">
    <properties>
     <property name="hunger_restore" type="int" value="10"/>
     <property name="poisonous" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="81" name="mushroom" type="mushroom_p" gid="1019" x="1440" y="225.333" width="32" height="32">
+  <object id="81" name="poison mushroom" type="mushroom" gid="1019" x="1440" y="225.333" width="32" height="32">
    <properties>
     <property name="hunger_restore" type="int" value="10"/>
     <property name="poisonous" type="bool" value="true"/>
    </properties>
   </object>
+  <object id="82" name="light_rock" type="resource" gid="497" x="1220" y="414.667" width="32" height="32"/>
+  <object id="83" name="light_rock" type="resource" gid="497" x="1281.33" y="228" width="32" height="32"/>
+  <object id="84" name="light_rock" type="resource" gid="497" x="125.333" y="126.667" width="32" height="32"/>
+  <object id="85" name="light_rock" type="resource" gid="497" x="477.333" y="113.333" width="32" height="32"/>
+  <object id="86" name="light_rock" type="resource" gid="497" x="0" y="293.333" width="32" height="32"/>
  </objectgroup>
 </map>

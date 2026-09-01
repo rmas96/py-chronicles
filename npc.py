@@ -148,6 +148,7 @@ class Npc(Character):
                 if target.get_skin() != skin.PLAYER:
                     target.become_hostile(self)
                 self.__in_cooldown = True
+                self.is_attacking = True
         else:
             self.travel_to([target.x, target.y], world)
 
@@ -173,6 +174,9 @@ class Npc(Character):
     def update_cooldown_timer(self, dt):
         if self.__in_cooldown:
             self.__attack_timer += dt
+
+            if self.__attack_timer >= 1000:
+                self.is_attacking = False
 
             if self.__attack_timer >= game.ATTACK_COOLDOWN * 1000:
                 self.__in_cooldown = False

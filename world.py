@@ -20,7 +20,7 @@ class World:
             self.__map.tileheight)
             for x, y, gid in self.__map.layernames["Colision"] if gid != 0
         ]
-        self.__pickups = [Pickup(pickup) for pickup in self.__map.layernames["Pickups2"]]
+        self.__pickups = [Pickup(pickup) for pickup in self.__map.layernames["Pickups"]]
         self.__factions = {
             "druid": Druid(),
             "exiled": Exiled(),

@@ -4,24 +4,48 @@ import configs
 import dialogues
 from configs import skin, window, font
 from faction import Faction
+from item import Resource
+from player import Player
 from playerintent import playerintent
 
 
 class DialogManager:
-    def __init__(self, npc):
-        match npc.faction.name:
-            case "druid": self.__dialog_tree = dialogues.DRUID_DIALOGUE
-            case "exiled": self.__dialog_tree = dialogues.EXILED_DIALOGUE
-            case "corrupted": self.__dialog_tree = dialogues.CORRUPTED_DIALOGUE
+    def __init__(self, npc, player):
         self.__faction_stage = npc.faction.stage
-        match self.__faction_stage:
-            case 0: self.__current_node = "start"
-            case 1: self.__current_node = "start"
-            case 2: self.__current_node = "start"
-            case 3: self.__current_node = "start"
+        match npc.faction.name:
+            case "druid":
+                self.__dialog_tree = dialogues.DRUID_DIALOGUE
+
+                if not player.discovered[npc.faction.name]:
+                    self.__current_node = "start"
+                    player.discover(npc.faction.name)
+                else:
+                    self.__current_node = "explain_nature"
+            case "exiled":
+                self.__dialog_tree = dialogues.EXILED_DIALOGUE
+
+                if not player.discovered[npc.faction.name]:
+                    self.__current_node = "start"
+                    player.discover(npc.faction.name)
+                else:
+                    if self.__faction_stage == 0:
+                        self.__current_node = "offer_help"
+                    elif self.__faction_stage == 1:
+                        self.__current_node = "building_bomb"
+                    elif self.__faction_stage == 2:
+                        self.__current_node = "travelling"
+            case "corrupted":
+                self.__dialog_tree = dialogues.CORRUPTED_DIALOGUE
+
+                if not player.discovered[npc.faction.name]:
+                    self.__current_node = "start"
+                    player.discover(npc.faction.name)
+                else:
+                    self.__current_node = "start"
+
         self.__skin = skin.DIALOG_BACKGROUND
 
-    def draw(self, screen, camera):
+    def draw(self, screen):
         screen.blit(self.__skin, [
             window.WIDTH / 2 - self.__skin.get_width() / 2,
             window.HEIGHT / 2 - self.__skin.get_height() / 2
@@ -42,6 +66,7 @@ class DialogManager:
 
             i += 1
 
+
         i = 1
         for option in self.__dialog_tree[self.__current_node]["options"]:
             option_text = font.LOBSTER_TWO.render(
@@ -59,8 +84,7 @@ class DialogManager:
 
             i += 1
 
-    def handle_input(self, events):
-        intent = playerintent.INTERACT
+    def handle_input(self, events, player, world):
         options = self.__dialog_tree[self.__current_node]["options"]
 
         for event in events:
@@ -68,9 +92,22 @@ class DialogManager:
                 match event.key:
                     case pygame.K_1:
                         if len(options) > 0:
-                            self.__current_node = options[0]["next"]
+                            if self.__current_node == "offer_help":
+                                i = 0
+                                for item in player.inventory:
+                                    if isinstance(item.item, Resource):
+                                        # print(i)
+                                        player.use_inventory_item(i)
+                                        world.factions["exiled"].increment_resource_qt()
+                                        self.__current_node = options[0]["next"]
+                                    i += 1
+                                if world.factions["exiled"].stage == 1:
+                                    self.__faction_stage = 1
+                                    self.__current_node = "building_bomb"
+                            else:
+                                self.__current_node = options[0]["next"]
                         else:
-                            intent = playerintent.NONE
+                            player.in_dialog = False
                     case pygame.K_2:
                         if len(options) > 1:
                             self.__current_node = options[1]["next"]
@@ -78,6 +115,4 @@ class DialogManager:
                         if len(options) > 2:
                             self.__current_node = options[2]["next"]
                     case pygame.K_SPACE:
-                        intent = playerintent.NONE
-
-        return intent
+                        player.in_dialog = False

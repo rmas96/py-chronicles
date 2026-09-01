@@ -20,12 +20,21 @@ class Player(Character):
         self.__hunger_timer = 0
         self.__life_timer = 0
         self.__attack_timer = 0
+        self.__is_sprinting = False
+        self.__sprint_timer = 0
         self.__inventory = []
         self.__reputation = {
-            "Druids": 0,
-            "Exiled": 0,
-            "Corrupted": 0
+            "druid": 0,
+            "exiled": 0,
+            "corrupted": 0
         }
+        self.__discovered = {
+            "druid": False,
+            "exiled": False,
+            "corrupted": False
+        }
+        self.__in_dialog = False
+
 
     @property
     def hunger(self):
@@ -39,12 +48,29 @@ class Player(Character):
     def inventory(self):
         return self.__inventory
 
+    @property
+    def discovered(self):
+        return self.__discovered
+
+    @property
+    def in_dialog(self):
+        return self.__in_dialog
+    @in_dialog.setter
+    def in_dialog(self, value):
+        self.__in_dialog = value
+
+    def discover(self, faction):
+        self.__discovered[faction] = True
+        # print(f"{self.__discovered}")
+
     def get_skin(self):
         return skin.PLAYER
 
+    def get_attack_skin(self):
+        return skin.PLAYER_ATTACKING
+
     def handle_input(self, world, events):
         self.handle_movement_input(world)
-        intent = playerintent.NONE
 
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -54,16 +80,22 @@ class Player(Character):
                     case pygame.K_2:
                         self.use_inventory_item(1)
                     case pygame.K_3:
-                        intent = playerintent.GIVE_RESOURCE
+                        self.use_inventory_item(2)
                     case pygame.K_c:
-                        intent = playerintent.INTERACT
+                        self.__in_dialog = True
                     case pygame.K_e:
-                        if not self.is_attacking:
-                            intent = playerintent.ATTACK
-                            self.is_attacking = True
-                            self.__energy -= 1
+                        self.attack(world)
 
-        return intent
+    def attack(self, world) -> int:
+        if not self.is_attacking:
+            self.is_attacking = True
+            self.__energy -= 1
+
+            npc = world.get_nearby_npc(self)
+            if npc:
+                if self.collides(npc):
+                    npc.lose_life(self.attack_power)
+                    npc.become_hostile(self)
 
     def use_inventory_item(self, i):
         if len(self.inventory) > i:
@@ -75,12 +107,14 @@ class Player(Character):
                 if self.__inventory[i].quantity == 0:
                     self.__inventory.remove(self.__inventory[i])
 
+        # print(self.__inventory)
+
     def handle_movement_input(self, world):
         key = pygame.key.get_pressed()
-        self.__speed = 1
 
-        if key[pygame.KMOD_SHIFT]:
-            self.increase_speed(2)
+        if key[pygame.K_LSHIFT]:
+            self.change_speed(1.5)
+            self.__is_sprinting = True
 
         if key[pygame.K_LEFT] or key[pygame.K_a]:
             self.move(direction.LEFT, world)
@@ -94,7 +128,7 @@ class Player(Character):
         if key[pygame.K_DOWN] or key[pygame.K_s]:
             self.move(direction.DOWN, world)
 
-        self.increase_speed(1)
+        self.change_speed(1)
 
     def update_stats(self, dt):
         self.__hunger_timer += dt
@@ -104,9 +138,17 @@ class Player(Character):
         if self.lives < 10:
             self.__life_timer += dt
 
+        if self.__is_sprinting:
+            self.__sprint_timer += dt
+            self.__is_sprinting = False
+
         if self.__attack_timer >= 1000:
             self.is_attacking = False
             self.__attack_timer = 0
+
+        if self.__sprint_timer >= 1000:
+            self.__energy -= game.SPRINT_ENERGY_COST
+            self.__sprint_timer = 0
 
         while self.__hunger_timer >= game.HUNGER_DECAY_TIME * 1000:
             if self.__hunger < 100:
@@ -146,20 +188,23 @@ class Player(Character):
         repeated_item = False
 
         if isinstance(obj, Pickup):
-            if obj.tile.type == "mushroom" or obj.tile.type == "mushroom_p":
-                item = InventoryItem(Food(obj.tile.type, image, obj.tile.hunger_restore, obj.tile.poisonous))
-                print(item.item.name)
-                print(item.quantity)
-                if self.__inventory:
-                    for inv_item in self.__inventory:
-                        if item.item.name == inv_item.item.name:
-                            print("sabe que já tinha mushrooms")
-                            inv_item.increment_quant()
-                            repeated_item = True
-                if not repeated_item:
-                    self.__inventory.append(item)
-                    print("adicionou o item")
-        print(self.__inventory)
+            if obj.tile.type == "mushroom":
+                item = InventoryItem(Food(obj.tile.name, image, obj.tile.hunger_restore, obj.tile.poisonous))
+                # print(item.item.name)
+                # print(item.quantity)
+            elif obj.tile.type == "resource":
+                item = InventoryItem(Resource(obj.tile.name, image))
+
+            if self.__inventory:
+                for inv_item in self.__inventory:
+                    if item.item.name == inv_item.item.name:
+                        # print("sabe que já tinha mushrooms")
+                        inv_item.increment_quant()
+                        repeated_item = True
+            if not repeated_item:
+                self.__inventory.append(item)
+                # print("adicionou o item")
+        # print(self.__inventory)
 
 class InventoryItem:
     def __init__(self, item):

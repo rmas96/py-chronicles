@@ -114,7 +114,7 @@ class Character:
         # print(f"{self.__x}, {self.__y}")
         # print(f"{window.WIDTH - 360 - self.__skin.get_width()}")
 
-    def increase_speed(self, value):
+    def change_speed(self, value):
         self.__speed = value
 
     def teleport(self, coord):
@@ -143,6 +143,7 @@ class Character:
 
         if self.__lives > game.MAX_LIFE:
             self.__lives = game.MAX_LIFE
+
     def lose_life(self, life_points):
         if self.__lives > 1:
             self.__lives -= life_points
@@ -153,6 +154,7 @@ class Character:
     def die(self):
         self.__lives = 0
         self.__is_dead = True
+        self.__is_attacking = False
         sound.GAME_OVER.play()
 
         if not self.__is_flipped:

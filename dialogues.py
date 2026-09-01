@@ -67,7 +67,7 @@ CORRUPTED_DIALOGUE = {
 
 EXILED_DIALOGUE = {
     "start": {
-        "text": "*Um homem magro ergue a cabeça de um pequeno fogo* Outro viajante. Não temos muito para oferecer, mas és bem-vindo a sentar-te.",
+        "text": "*Um homem magro ergue a cabeça* Outro viajante. Não temos muito para oferecer, mas és bem-vindo a sentar-te.",
         "options": [
             {"text": "O que fazem aqui?", "next": "explain_camp"},
             {"text": "Aquela cidade ali é vossa?", "next": "ask_city"},
@@ -93,6 +93,28 @@ EXILED_DIALOGUE = {
     },
     "offer_help": {
         "text": "*Os olhos dele acendem-se, pela primeira vez com esperança genuína* Se encontrares materiais que possam ajudar, traz-nos. Não te vamos esquecer isso.",
+        "options": [
+            {"text": "Dar recurso", "next": "give_resource"}
+        ]
+    },
+    "give_resource": {
+        "text": "Obrigado viajante! Não te vamos esquecer isto.",
+        "options": [
+            {"text": "De nada!", "next": "offer_help"}
+        ]
+    },
+    "building_bomb": {
+        "text": "Obrigado viajante! Não te vamos esquecer isto. Já temos recursos suficientes!",
+        "options": [
+            {"text": "O que vão fazer com eles?", "next": "explain_bomb"}
+        ]
+    },
+    "explain_bomb": {
+        "text": "Com o material que altruisticamente nos deste conseguimos contruir um explosivo que terá força suficiente para danificar a parede da cidade, e conseguiremos entrar.",
+        "options": []
+    },
+    "travelling": {
+        "text": "Estamos perto! Só nos falta usar o explosivo e estamos em casa!",
         "options": []
     },
 }
