@@ -16,6 +16,10 @@ class Npc(Character):
         self.__target = None
         self.__attack_timer = 0
         self.__in_cooldown = False
+        self.__is_stuck = False
+        self.__stuck_timer = 0
+        self.__stuck_coords = [0, 0]
+        self.__escape_direction = None
 
     @property
     def faction(self):
@@ -115,22 +119,27 @@ class Npc(Character):
                 self.__moving = False
             else:
                 self.__moving = True
-                direc = randint(0, 4)
-                match direc:
-                    case 0:
-                        self.__direction = None
-                    case 1:
-                        self.__direction = direction.LEFT
-                    case 2:
-                        self.__direction = direction.RIGHT
-                    case 3:
-                        self.__direction = direction.DOWN
-                    case 4:
-                        self.__direction = direction.UP
+                self.__direction = self.get_random_direction()
             self.__move_timer -= 1000
 
         if self.__moving:
             self.move(self.__direction, world)
+
+    def get_random_direction(self):
+        direc = randint(0, 4)
+        match direc:
+            case 0:
+                return None
+            case 1:
+                return direction.LEFT
+            case 2:
+                return direction.RIGHT
+            case 3:
+                return direction.DOWN
+            case 4:
+                return direction.UP
+
+        return None
 
     def become_hostile(self, target):
         if not self.is_dead:
@@ -157,19 +166,53 @@ class Npc(Character):
         x_diff = coord[0] - self.x
         y_diff = coord[1] - self.y
 
-        if x_diff < 0 and abs(x_diff) >= abs(y_diff):
-            self.__direction = direction.LEFT
+        previous_pos = [self.x, self.y]
 
-        if x_diff > 0 and abs(x_diff) >= abs(y_diff):
-            self.__direction = direction.RIGHT
+        if not self.__is_stuck:
+            if x_diff < 0 and abs(x_diff) >= abs(y_diff):
+                self.__direction = direction.LEFT
 
-        if y_diff < 0 and abs(y_diff) >= abs(x_diff):
-            self.__direction = direction.UP
+            if x_diff > 0 and abs(x_diff) >= abs(y_diff):
+                self.__direction = direction.RIGHT
 
-        if y_diff > 0 and abs(y_diff) >= abs(x_diff):
-            self.__direction = direction.DOWN
+            if y_diff < 0 and abs(y_diff) >= abs(x_diff):
+                self.__direction = direction.UP
 
-        self.move(self.__direction, world)
+            if y_diff > 0 and abs(y_diff) >= abs(x_diff):
+                self.__direction = direction.DOWN
+
+            self.move(self.__direction, world)
+
+            if previous_pos == [self.x, self.y]:
+
+                if self.__direction == direction.RIGHT or self.__direction == direction.LEFT:
+                    if y_diff < 0:
+                        self.__direction = direction.UP
+                    else:
+                        self.__direction = direction.DOWN
+                elif self.__direction == direction.UP or self.__direction == direction.DOWN:
+                    if x_diff < 0:
+                        self.__direction = direction.LEFT
+                    else:
+                        self.__direction = direction.RIGHT
+
+                self.move(self.__direction, world)
+
+                if [self.x, self.y] == self.__stuck_coords:
+                    self.__is_stuck = True
+                    print(f"{self.faction} is stuck")
+                    self.__escape_direction = self.get_random_direction()
+                else:
+                    self.__stuck_coords = previous_pos
+        else:
+            self.__stuck_timer += 1
+
+            if self.__stuck_timer <= 60 * 4:
+                self.move(self.__escape_direction, world)
+            else:
+                self.__stuck_timer = 0
+                self.__is_stuck = False
+
 
     def update_cooldown_timer(self, dt):
         if self.__in_cooldown:

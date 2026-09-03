@@ -89,7 +89,7 @@ class Player(Character):
     def attack(self, world) -> int:
         if not self.is_attacking:
             self.is_attacking = True
-            self.__energy -= 1
+            self.__energy -= 5
 
             npc = world.get_nearby_npc(self)
             if npc:
