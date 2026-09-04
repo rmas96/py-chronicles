@@ -28,6 +28,15 @@ class Faction:
     def advance_stage(self, dt, factions):
         pass
 
+    def update_resources_taken(self, player, exiled):
+        pass
+
+    def increment_resource_qt(self):
+        pass
+
+    def increment_kill_count(self):
+        pass
+
 class Druid(Faction):
     def __init__(self):
         super().__init__()
@@ -63,6 +72,10 @@ class Druid(Faction):
 
     def increment_kill_count(self):
         self.__kill_count += 1
+
+    def update_resources_taken(self, player, exiled):
+        self.__resources_taken["player"] += player
+        self.__resources_taken["exiled"] += exiled
 
 class Exiled(Faction):
     def __init__(self):

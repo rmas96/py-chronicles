@@ -13,6 +13,7 @@ class Character:
         self.__attacking_skin = self.get_attack_skin()
         self.__speed = 1
         self.__direction = None
+        self.__facing = direction.RIGHT
         self.__lives = 10
         self.__is_dead = False
         self.__is_flipped = False
@@ -70,7 +71,19 @@ class Character:
     def get_attack_power(self):
         return 1
 
+    def increment_kill_count(self):
+        self.__kill_count += 1
+
     def draw(self, screen, camera: Camera):
+        if self.__direction == direction.LEFT and self.__facing != direction.LEFT:
+            self.__skin = pygame.transform.flip(self.__skin, 1, 0)
+            self.__attacking_skin = pygame.transform.flip(self.__attacking_skin, 1, 0)
+            self.__facing = direction.LEFT
+        elif self.__direction == direction.RIGHT and self.__facing != direction.RIGHT:
+            self.__skin = pygame.transform.flip(self.__skin, 1, 0)
+            self.__attacking_skin = pygame.transform.flip(self.__attacking_skin, 1, 0)
+            self.__facing = direction.RIGHT
+
         if self.__is_attacking:
             screen.blit(self.__attacking_skin, [self.__x - camera.x, self.__y - camera.y])
         else:

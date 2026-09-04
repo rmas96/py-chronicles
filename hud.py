@@ -30,8 +30,6 @@ class Hud:
         hunger_txt = font.CARTER_ONE.render(f"{self.__hunger:.0f}", True, "yellow")
         energy_txt = font.CARTER_ONE.render(f"{self.__energy:.0f}", True, "blue")
 
-
-
         screen.blit(label_txt, [130 - label_txt.get_width() / 2, 10])
         screen.blit(lives_txt, [70 - lives_txt.get_width() / 2, 50])
         screen.blit(hunger_txt, [140 - hunger_txt.get_width() / 2, 50])

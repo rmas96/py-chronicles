@@ -27,9 +27,13 @@ class World:
             "corrupted": Corrupted()
         }
         self.__entities = {
-            "druid": Npc(self.__factions["druid"]),
-            "exiled": Npc(self.__factions["exiled"]),
-            "corrupted": Npc(self.__factions["corrupted"]),
+            "druid_1": Npc(self.__factions["druid"]),
+            "druid_2": Npc(self.__factions["druid"]),
+            "exiled_1": Npc(self.__factions["exiled"]),
+            "exiled_2": Npc(self.__factions["exiled"]),
+            "corrupted_1": Npc(self.__factions["corrupted"]),
+            "corrupted_2": Npc(self.__factions["corrupted"]),
+            "corrupted_3": Npc(self.__factions["corrupted"]),
         }
 
     @property
@@ -77,7 +81,7 @@ class World:
         [name, random_npc] = random.choice(list(self.__entities.items()))
 
         while random_npc.is_dead:
-            random_npc = random.choice(list(self.__entities.items()))
+            [name, random_npc] = random.choice(list(self.__entities.items()))
 
         return random_npc
 
@@ -106,6 +110,21 @@ class World:
                         self.__map.get_tile_image_by_gid(pickup.tile.gid)
                     )
                     pickup.disappear()
+                    if pickup.tile.type == "resource":
+                        self.__factions["druid"].update_resources_taken(1, 0)
+
+                if pickup.tile.type == "resource":
+                    for entity in self.__entities:
+                        if self.__entities[entity].faction.name == "exiled":
+                            if self.__entities[entity].collides(pygame.Rect(
+                                pickup.tile.x,
+                                pickup.tile.y,
+                                self.__map.tilewidth,
+                                self.__map.tileheight
+                        )):
+                                self.__factions["exiled"].increment_resource_qt()
+                                self.__factions["druid"].update_resources_taken(0, 1)
+
 
 class Pickup:
     def __init__(self, pickup):

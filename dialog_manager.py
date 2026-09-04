@@ -21,6 +21,15 @@ class DialogManager:
                     player.discover(npc.faction.name)
                 else:
                     self.__current_node = "explain_nature"
+
+                if player.reputation["druid"] > 0 or player.discovered["corrupted"]:
+                    self.__current_node = "corrupted_discovered"
+
+                if self.__faction_stage == 1:
+                    self.__current_node = "corrupted_activated"
+
+                if player.reputation["corrupted"] > 0 or player.reputation["druid"] < 0:
+                    self.__current_node = "corrupted"
             case "exiled":
                 self.__dialog_tree = dialogues.EXILED_DIALOGUE
 
@@ -100,6 +109,7 @@ class DialogManager:
                                         player.use_inventory_item(i)
                                         world.factions["exiled"].increment_resource_qt()
                                         self.__current_node = options[0]["next"]
+                                        player.increase_reputation("exiled", 20)
                                     i += 1
                                 if world.factions["exiled"].stage == 1:
                                     self.__faction_stage = 1

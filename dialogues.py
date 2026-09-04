@@ -31,6 +31,26 @@ DRUID_DIALOGUE = {
         "text": "Ninguém apenas passa por aqui. A floresta escolhe quem entra. Volta quando tiveres perguntas a sério.",
         "options": []
     },
+    "corrupted_activated": {
+        "text": "O norte está cada vez mais escuro... Temos que estar alerta",
+        "options": [
+            {"text": "Há alguma maneira de os ajudar?", "next": "cure"}
+        ]
+    },
+    "corrupted": {
+        "text": "A tua aura está escura...",
+        "options": []
+    },
+    "corrupted_discovered": {
+        "text": "Então há corrompidos a norte... Pode ser demasiado tarde para os ajudar. Pouco tarda até eles quererem consumir toda a vida nesta terra",
+        "options": [
+            {"text":"Há alguma maneira de os ajudar?", "next": "cure"}
+        ]
+    },
+    "cure": {
+        "text": "Se eles aceitarem os cogumelos venenosos, pode ser que mate a corrupção que os aflige. Senão teram que desaparecer, a bem ou a mal",
+        "options": []
+    },
 }
 
 

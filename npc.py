@@ -46,70 +46,62 @@ class Npc(Character):
         else:
             self.move_randomly(dt, world)
 
-        match self.__faction.name:
-            case "druid":
-                if faction.stage == 1:
-                    npc = world.get_nearby_npc(self)
-                    if npc:
-                        if npc.faction.name == "corrupted" and not npc.is_dead:
-                            self.__hostile = True
-                            self.__target = npc
-                elif faction.stage == 2:
-                    self.be_hostile_to_all(player, world)
+            match self.__faction.name:
+                case "druid":
+                    if faction.stage == 1:
+                        npc = world.get_nearby_npc(self)
+                        if npc:
+                            if npc.faction.name == "corrupted" and not npc.is_dead:
+                                self.become_hostile(npc)
 
-            case "corrupted":
-                if faction.stage == 1:
-                    self.be_hostile_to_all(player, world)
-                elif faction.stage == 2:
-                    self.kill_all(player, world)
+                        if player.reputation["corrupted"] > 0:
+                            player_target = world.get_nearby_npc(player)
+                            if player_target:
+                                if player_target.x == self.x and player_target.y == self.y:
+                                    self.become_hostile(player)
+                    elif faction.stage == 2:
+                        self.be_hostile_to_all(player, world)
 
-            case "exiled":
-                if faction.stage == 2:
-                    self.travel_to([60, 333.0], world)
+                case "corrupted":
+                    if faction.stage == 1:
+                        self.be_hostile_to_all(player, world)
+                    elif faction.stage == 2:
+                        self.kill_all(player, world)
 
-                    if self.x == 60 and self.y == 333:
-                        self.teleport([30, 333])
-                        self.faction.wall_exploded()
+                case "exiled":
+                    if faction.stage == 2:
+                        self.travel_to([504, 1395], world)
+
+                        if self.x == 504 and self.y == 1395:
+                            self.teleport([200, 1395])
+                            self.faction.wall_exploded()
 
     def be_hostile_to_all(self, player, world):
         npc = world.get_nearby_npc(self)
         player_target = world.get_nearby_npc(player)
 
         if npc:
-            self.__hostile = True
-            self.__target = npc
+            if npc.faction.name != self.__faction.name:
+                self.become_hostile(npc)
 
         if player_target:
             if player_target.x == self.x and player_target.y == self.y:
-                self.__hostile = True
-                self.__target = player
-
-        if self.__target:
-            if self.__target.is_dead:
-                self.__hostile = False
-                self.faction.increment_kill_count()
-                self.__target = None
+                self.become_hostile(player)
 
     def kill_all(self, player, world):
         if not self.__target:
             self_count = 0
             while not self.__target:
                 target = world.get_random_npc()
-                if target == self:
+                while target.faction.name == self.__faction.name and self_count <= 7:
+                    target = world.get_random_npc()
                     self_count += 1
 
-                if self_count >= 3:
+                if self_count > 7:
                     target = player
 
-                if target != self:
-                    self.__target = target
-
-        self.__hostile = True
-
-        if self.__target:
-            if self.__target.is_dead:
-                self.faction.increment_kill_count()
-                self.__target = None
+                self.__target = target
+                self.become_hostile(target)
 
     def move_randomly(self, dt, world):
         self.__move_timer += dt
@@ -149,6 +141,10 @@ class Npc(Character):
     def attack(self, target, world):
         if target.is_dead:
             self.__hostile = False
+
+            self.__faction.increment_kill_count()
+
+            self.__target = None
             return
 
         if self.collides(target):
@@ -200,7 +196,7 @@ class Npc(Character):
 
                 if [self.x, self.y] == self.__stuck_coords:
                     self.__is_stuck = True
-                    print(f"{self.faction} is stuck")
+                    print(f"{self.faction.name} is stuck")
                     self.__escape_direction = self.get_random_direction()
                 else:
                     self.__stuck_coords = previous_pos

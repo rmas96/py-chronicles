@@ -9,11 +9,12 @@ from world import World, Pickup
 
 
 class Player(Character):
-    def __init__(self):
+    def __init__(self, reputation=None, discovered=None):
         super().__init__(
             map.WIDTH / 2 - skin.PLAYER.get_width() / 2,
             map.HEIGHT / 2 - skin.PLAYER.get_height() / 2
         )
+        self.__target = None
         self.__energy = 100
         self.__energy_timer = 0
         self.__hunger = 0
@@ -23,16 +24,20 @@ class Player(Character):
         self.__is_sprinting = False
         self.__sprint_timer = 0
         self.__inventory = []
-        self.__reputation = {
-            "druid": 0,
-            "exiled": 0,
-            "corrupted": 0
-        }
-        self.__discovered = {
-            "druid": False,
-            "exiled": False,
-            "corrupted": False
-        }
+        if reputation is None:
+            self.__reputation = {
+                "druid": 0,
+                "exiled": 0,
+                "corrupted": 0
+            }
+            self.__discovered = {
+                "druid": False,
+                "exiled": False,
+                "corrupted": False
+            }
+        else:
+            self.__reputation = reputation
+            self.__discovered = discovered
         self.__in_dialog = False
 
 
@@ -59,6 +64,10 @@ class Player(Character):
     def in_dialog(self, value):
         self.__in_dialog = value
 
+    @property
+    def reputation(self):
+        return self.__reputation
+
     def discover(self, faction):
         self.__discovered[faction] = True
         # print(f"{self.__discovered}")
@@ -68,6 +77,19 @@ class Player(Character):
 
     def get_attack_skin(self):
         return skin.PLAYER_ATTACKING
+
+    def increase_reputation(self, faction, value):
+        self.__reputation[faction] += value
+
+    def decrease_reputation(self, faction, value):
+        self.__reputation[faction] -= value
+
+    def lose_energy(self, value):
+        if self.__energy - value < 0:
+            self.__energy = 0
+            return
+
+        self.__energy -= value
 
     def handle_input(self, world, events):
         self.handle_movement_input(world)
@@ -86,16 +108,37 @@ class Player(Character):
                     case pygame.K_e:
                         self.attack(world)
 
-    def attack(self, world) -> int:
+    def attack(self, world):
+        if self.__energy <= 5:
+            return
+
         if not self.is_attacking:
             self.is_attacking = True
-            self.__energy -= 5
+            self.lose_energy(5)
 
             npc = world.get_nearby_npc(self)
             if npc:
-                if self.collides(npc):
-                    npc.lose_life(self.attack_power)
-                    npc.become_hostile(self)
+                if not npc.is_dead:
+                    self.__target = npc
+
+                    if self.collides(npc):
+                        npc.lose_life(self.attack_power)
+                        npc.become_hostile(self)
+
+                    if self.__target.is_dead:
+                        if self.__target.faction.name == "corrupted":
+                            self.increase_reputation("druid", 50)
+                            print("Aumentou reputação com os druidas")
+                            self.decrease_reputation("corrupted", 10)
+                        elif self.__target.faction.name == "druid":
+                            self.decrease_reputation("druid", 60)
+                            self.increase_reputation("corrupted", 100)
+                        elif self.__target.faction.name == "exiled":
+                            self.decrease_reputation("exiled", 30)
+                            self.increase_reputation("corrupted", 100)
+
+                        self.increment_kill_count()
+                        self.__target = None
 
     def use_inventory_item(self, i):
         if len(self.inventory) > i:
@@ -147,7 +190,7 @@ class Player(Character):
             self.__attack_timer = 0
 
         if self.__sprint_timer >= 1000:
-            self.__energy -= game.SPRINT_ENERGY_COST
+            self.lose_energy(game.SPRINT_ENERGY_COST)
             self.__sprint_timer = 0
 
         while self.__hunger_timer >= game.HUNGER_DECAY_TIME * 1000:
@@ -161,7 +204,7 @@ class Player(Character):
                 if self.__energy <= 0:
                     self.lose_life(1)
                 else:
-                    self.__energy -= 1
+                    self.lose_energy(1)
             else:
                 if self.__energy < 100:
                     self.__energy += 1
@@ -171,7 +214,7 @@ class Player(Character):
         while self.__life_timer >= game.LIFE_RECOVERY_TIME * 1000:
             if self.__energy - game.LIFE_RECOVERY_COST > 0:
                 self.recover_life(0.5)
-                self.__energy -= game.LIFE_RECOVERY_COST
+                self.lose_energy(game.LIFE_RECOVERY_COST)
 
             self.__life_timer -= game.LIFE_RECOVERY_TIME * 1000
 
