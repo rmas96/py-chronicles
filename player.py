@@ -79,10 +79,12 @@ class Player(Character):
         return skin.PLAYER_ATTACKING
 
     def increase_reputation(self, faction, value):
-        self.__reputation[faction] += value
+        if self.__discovered[faction]:
+            self.__reputation[faction] += value
 
     def decrease_reputation(self, faction, value):
-        self.__reputation[faction] -= value
+        if self.__discovered[faction]:
+            self.__reputation[faction] -= value
 
     def lose_energy(self, value):
         if self.__energy - value < 0:

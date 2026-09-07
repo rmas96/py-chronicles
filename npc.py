@@ -67,6 +67,7 @@ class Npc(Character):
                         self.be_hostile_to_all(player, world)
                     elif faction.stage == 2:
                         self.kill_all(player, world)
+                        self.change_speed(1.5)
 
                 case "exiled":
                     if faction.stage == 2:

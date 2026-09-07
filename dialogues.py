@@ -48,7 +48,7 @@ DRUID_DIALOGUE = {
         ]
     },
     "cure": {
-        "text": "Se eles aceitarem os cogumelos venenosos, pode ser que mate a corrupção que os aflige. Senão teram que desaparecer, a bem ou a mal",
+        "text": "Se eles aceitarem os cogumelos venenosos, pode ser que mate a corrupção que os aflige. Senão terão que desaparecer, a bem ou a mal",
         "options": []
     },
 }
@@ -87,7 +87,7 @@ CORRUPTED_DIALOGUE = {
 
 EXILED_DIALOGUE = {
     "start": {
-        "text": "*Um homem magro ergue a cabeça* Outro viajante. Não temos muito para oferecer, mas és bem-vindo a sentar-te.",
+        "text": "*Um humanóide magro ergue a cabeça* Outro viajante. Não temos muito para oferecer, mas és bem-vindo a sentar-te.",
         "options": [
             {"text": "O que fazem aqui?", "next": "explain_camp"},
             {"text": "Aquela cidade ali é vossa?", "next": "ask_city"},
@@ -135,6 +135,10 @@ EXILED_DIALOGUE = {
     },
     "travelling": {
         "text": "Estamos perto! Só nos falta usar o explosivo e estamos em casa!",
+        "options": []
+    },
+    "building_bomb_alone": {
+        "text": "Em breve, viajante, não nos verás nesta misera situação... estaremos de volta a casa!",
         "options": []
     },
 }

@@ -29,7 +29,6 @@ displayed_max_reputation = {
 message_timer = 0
 game_over = False
 win = False
-player_intent = playerintent.NONE
 in_dialog = False
 while True:
     dt = clock.tick(60)
@@ -114,25 +113,28 @@ while True:
                 displayed_max_reputation[faction] = False
                 message_timer = 0
 
-        if world.factions[faction].stage == 3:
-            if not displayed_max_reputation[faction]:
-                lines = font.split(f"A facção {world.factions[faction].name} concretizou o seu objetivo")
-            else:
-                lines = font.split(f"A facção {world.factions[faction].name} concretizou o seu objetivo, ajudada pelo jogador")
+        if not win or not game_over:
+            if world.factions[faction].stage == 3:
+                if not displayed_max_reputation[faction]:
+                    lines = font.split(f"A facção {world.factions[faction].name} concretizou o seu objetivo")
+                    game_over = True
+                else:
+                    lines = font.split(f"A facção {world.factions[faction].name} concretizou o seu objetivo, ajudada pelo jogador")
+                    win = True
 
-            i = 1
-            for line in lines:
-                win_text = font.CARTER_ONE.render(
-                    line,
-                    True,
-                    "black"
-                )
+                i = 1
+                for line in lines:
+                    win_text = font.CARTER_ONE.render(
+                        line,
+                        True,
+                        "black"
+                    )
 
-                screen.blit(win_text, [
-                    window.WIDTH / 2 - win_text.get_width() / 2,
-                    window.HEIGHT / 2 - 125 + win_text.get_height() / 1.5 * i
-                ])
-                i += 1
-            break
+                    screen.blit(win_text, [
+                        window.WIDTH / 2 - win_text.get_width() / 2,
+                        window.HEIGHT / 2 - 125 + win_text.get_height() / 1.5 * i
+                    ])
+                    i += 1
+                break
 
     pygame.display.update()

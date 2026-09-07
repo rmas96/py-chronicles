@@ -6,7 +6,6 @@ from configs import skin, window, font
 from faction import Faction
 from item import Resource
 from player import Player
-from playerintent import playerintent
 
 
 class DialogManager:
@@ -22,7 +21,7 @@ class DialogManager:
                 else:
                     self.__current_node = "explain_nature"
 
-                if player.reputation["druid"] > 0 or player.discovered["corrupted"]:
+                if player.discovered["corrupted"]:
                     self.__current_node = "corrupted_discovered"
 
                 if self.__faction_stage == 1:
@@ -33,7 +32,7 @@ class DialogManager:
             case "exiled":
                 self.__dialog_tree = dialogues.EXILED_DIALOGUE
 
-                if not player.discovered[npc.faction.name]:
+                if not player.discovered[npc.faction.name] and self.__faction_stage == 0:
                     self.__current_node = "start"
                     player.discover(npc.faction.name)
                 else:
