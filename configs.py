@@ -47,8 +47,11 @@ class skin:
     PLAYER = pygame.image.load("imgs/player.png")
     PLAYER_ATTACKING = pygame.image.load("imgs/player attacking.png")
     DRUID = pygame.image.load("imgs/druid.png")
+    DRUID_ATTACKING = pygame.image.load("imgs/druid attacking.png")
     EXILED = pygame.image.load("imgs/exiled.png")
+    EXILED_ATTACKING = pygame.image.load("imgs/exiled attacking.png")
     CORRUPTED = pygame.image.load("imgs/orc.png")
+    CORRUPTED_ATTACKING = pygame.image.load("imgs/corrupted attacking.png")
     # DIALOG_BACKGROUND = pygame.transform.scale(pygame.image.load("imgs/papyrus_quad.png"), (window.WIDTH - 400, window.HEIGHT - 400))
     DIALOG_BACKGROUND = pygame.image.load("imgs/papyrus_quad.png")
 
@@ -68,6 +71,9 @@ class sound:
 
     COMPLETE = pygame.mixer.Sound("sounds/level_complete.wav")
     COMPLETE.set_volume(0.2)
+
+    INTERACT = pygame.mixer.Sound("sounds/interact.wav")
+    INTERACT.set_volume(0.2)
 
 class game:
     HUNGER_DECAY_TIME = 2

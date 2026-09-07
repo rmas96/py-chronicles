@@ -35,6 +35,16 @@ class Npc(Character):
 
         return self.__skin
 
+    def get_attack_skin(self):
+        if self.__faction.name == "druid":
+            self.__attacking_skin = skin.DRUID_ATTACKING
+        elif self.__faction.name == "exiled":
+            self.__attacking_skin = skin.EXILED_ATTACKING
+        elif self.__faction.name == "corrupted":
+            self.__attacking_skin = skin.CORRUPTED_ATTACKING
+
+        return self.__attacking_skin
+
     def update(self, world, dt, player, faction):
         if self.is_dead:
             return

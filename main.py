@@ -25,7 +25,7 @@ displayed_max_reputation = {
             "exiled": False,
             "corrupted": False
         }
-# sound.BACKGROUND.play(loops=-1)
+sound.BACKGROUND.play(loops=-1)
 message_timer = 0
 game_over = False
 win = False
@@ -54,6 +54,7 @@ while True:
             # print(npc)
             if npc:
                 dialog = DialogManager(npc, player)
+                sound.INTERACT.play()
                 # print("sabe que é para entrar em dialogo")
             else:
                 player.in_dialog = False
@@ -121,6 +122,7 @@ while True:
                 else:
                     lines = font.split(f"A facção {world.factions[faction].name} concretizou o seu objetivo, ajudada pelo jogador")
                     win = True
+                    sound.COMPLETE.play()
 
                 i = 1
                 for line in lines:

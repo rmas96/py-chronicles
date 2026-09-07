@@ -105,6 +105,8 @@ class World:
                         self.__map.tilewidth,
                         self.__map.tileheight
                 )):
+                    sound.INTERACT.play()
+
                     player.add_to_inventory(
                         pickup,
                         self.__map.get_tile_image_by_gid(pickup.tile.gid)
