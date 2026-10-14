@@ -129,15 +129,24 @@ class Player(Character):
 
                     if self.__target.is_dead:
                         if self.__target.faction.name == "corrupted":
-                            self.increase_reputation("druid", 50)
-                            print("Aumentou reputação com os druidas")
+                            if self.__discovered["druid"]:
+                                self.increase_reputation("druid", 50)
+                                if self.__reputation["druid"] > 0:
+                                    world.factions["druid"].increment_kill_count()
+                            # print("Aumentou reputação com os druidas")
                             self.decrease_reputation("corrupted", 10)
                         elif self.__target.faction.name == "druid":
                             self.decrease_reputation("druid", 60)
-                            self.increase_reputation("corrupted", 100)
+                            if self.__discovered["corrupted"]:
+                                self.increase_reputation("corrupted", 100)
+                                if self.__reputation["corrupted"] > 0:
+                                    world.factions["corrupted"].increment_kill_count()
                         elif self.__target.faction.name == "exiled":
                             self.decrease_reputation("exiled", 30)
-                            self.increase_reputation("corrupted", 100)
+                            if self.__discovered["corrupted"]:
+                                self.increase_reputation("corrupted", 100)
+                                if self.__reputation["corrupted"] > 0:
+                                    world.factions["corrupted"].increment_kill_count()
 
                         self.increment_kill_count()
                         self.__target = None

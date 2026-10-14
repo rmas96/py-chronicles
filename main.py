@@ -20,16 +20,17 @@ camera = Camera(window.WIDTH, window.HEIGHT, player)
 
 hud = Hud(player)
 
+sound.BACKGROUND.play(loops=-1)
+
 displayed_max_reputation = {
             "druid": False,
             "exiled": False,
             "corrupted": False
         }
-sound.BACKGROUND.play(loops=-1)
+
 message_timer = 0
 game_over = False
 win = False
-in_dialog = False
 while True:
     dt = clock.tick(60)
 
@@ -46,6 +47,7 @@ while True:
         quit(0)
 
     world.draw(screen, camera)
+
     if not player.in_dialog:
         player.handle_input(world, events)
 
@@ -94,10 +96,6 @@ while True:
             if message_timer > 5000:
                 displayed_max_reputation[faction] = True
                 message_timer = 0
-
-            if faction == "corrupted":
-                for x in range(0, player.kill_count):
-                    world.factions[faction].increment_kill_count()
         elif player.reputation[faction] < 100 and displayed_max_reputation[faction]:
             message_timer += dt
             text = font.CARTER_ONE.render(

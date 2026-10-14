@@ -72,6 +72,7 @@ class Druid(Faction):
 
     def increment_kill_count(self):
         self.__kill_count += 1
+        print(self.__kill_count)
 
     def update_resources_taken(self, player, exiled):
         self.__resources_taken["player"] += player
@@ -154,3 +155,4 @@ class Corrupted(Faction):
 
     def increment_kill_count(self):
         self.__kill_count += 1
+        print(self.__kill_count)

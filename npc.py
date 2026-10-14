@@ -45,6 +45,14 @@ class Npc(Character):
 
         return self.__attacking_skin
 
+    def get_attack_power(self):
+        if self.__faction.name == "druid":
+            return 2
+        elif self.__faction.name == "exiled":
+            return 1
+        elif self.__faction.name == "corrupted":
+            return 2
+
     def update(self, world, dt, player, faction):
         if self.is_dead:
             return
@@ -145,16 +153,14 @@ class Npc(Character):
         return None
 
     def become_hostile(self, target):
-        if not self.is_dead:
+        if not self.is_dead and not target.is_dead:
             self.__hostile = True
             self.__target = target
 
     def attack(self, target, world):
         if target.is_dead:
             self.__hostile = False
-
             self.__faction.increment_kill_count()
-
             self.__target = None
             return
 
@@ -167,7 +173,6 @@ class Npc(Character):
                 self.is_attacking = True
         else:
             self.travel_to([target.x, target.y], world)
-
 
     def travel_to(self, coord, world):
         x_diff = coord[0] - self.x

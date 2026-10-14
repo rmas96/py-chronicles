@@ -158,10 +158,10 @@ class Character:
             self.__lives = game.MAX_LIFE
 
     def lose_life(self, life_points):
-        if self.__lives > 1:
-            self.__lives -= life_points
-            sound.OUCH.play()
-        else:
+        self.__lives -= life_points
+        sound.OUCH.play()
+
+        if self.__lives <= 0:
             self.die()
 
     def die(self):
